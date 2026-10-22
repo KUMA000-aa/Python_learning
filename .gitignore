@@ -1,0 +1,11 @@
+# Python
+python-learning-backend/venv/
+python-learning-backend/__pycache__/
+python-learning-backend/**/__pycache__/
+python-learning-backend/*.pyc
+python-learning-backend/.env
+python-learning-backend/app.db
+
+# 微信开发者工具私有配置（每个人的设备信息不一样，不入库）
+project.private.config.json
+python-learning-miniapp/project.private.config.json
