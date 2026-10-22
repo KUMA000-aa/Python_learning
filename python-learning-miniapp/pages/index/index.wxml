@@ -1,0 +1,50 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">🐍 Python 学习</view>
+    <view class="hero-sub">每天一小关，离独立写代码更近一步</view>
+    <view class="bar">
+      <view class="bar-fill" style="width: {{percent}}%"></view>
+    </view>
+    <view class="hero-meta">{{completedCount}} / {{totalCount}} 关已通关</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="state">
+    <view class="state-emoji">⏳</view>
+    <view class="state-text">加载中…</view>
+  </view>
+
+  <view wx:elif="{{error}}" class="state">
+    <view class="state-emoji">😵</view>
+    <view class="state-text">{{error}}</view>
+    <view class="retry-btn" bindtap="onRetry">重新加载</view>
+    <view class="tip">提示：请先在电脑上启动后端服务（端口 8001）</view>
+  </view>
+
+  <view wx:else class="courses">
+    <view class="course" wx:for="{{courses}}" wx:key="id">
+      <view class="course-title">{{item.title}}</view>
+      <view class="course-desc">{{item.description}}</view>
+
+      <view class="unit" wx:for="{{item.units}}" wx:for-item="unit" wx:key="id">
+        <view class="unit-title">{{unit.title}}</view>
+
+        <view
+          class="level {{level.completed ? 'done' : ''}}"
+          wx:for="{{unit.levels}}"
+          wx:for-item="level"
+          wx:key="id"
+          data-id="{{level.id}}"
+          bindtap="onLevelTap"
+          hover-class="level-hover"
+        >
+          <view class="level-badge">{{level.order + 1}}</view>
+          <view class="level-info">
+            <view class="level-title">{{level.title}}</view>
+            <view class="level-meta">{{level.completed ? '已通关 · ' + level.score + ' 分' : '未开始'}}</view>
+          </view>
+          <view class="level-arrow">›</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

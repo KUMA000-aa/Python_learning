@@ -1,0 +1,111 @@
+.page {
+  padding: 48rpx 40rpx;
+}
+
+.card {
+  background: #FFFFFF;
+  border-radius: 36rpx;
+  padding: 56rpx 40rpx 44rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+}
+
+.emoji {
+  font-size: 96rpx;
+  line-height: 1;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-top: 24rpx;
+}
+
+.score {
+  font-size: 96rpx;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-top: 20rpx;
+}
+
+.card.pass .score {
+  color: #58CC02;
+}
+
+.card.fail .score {
+  color: #FF8A00;
+}
+
+.score-unit {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #9A9A9A;
+  margin-left: 6rpx;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 44rpx;
+  padding-top: 36rpx;
+  border-top: 1rpx solid #F2F2F2;
+}
+
+.stat .num {
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.stat .label {
+  font-size: 22rpx;
+  color: #9A9A9A;
+  margin-top: 8rpx;
+}
+
+.divider {
+  width: 1rpx;
+  height: 56rpx;
+  background: #EFEFEF;
+}
+
+.hint {
+  font-size: 24rpx;
+  color: #9A9A9A;
+  margin-top: 36rpx;
+  line-height: 1.6;
+}
+
+.actions {
+  margin-top: 48rpx;
+}
+
+.btn {
+  height: 92rpx;
+  line-height: 92rpx;
+  text-align: center;
+  border-radius: 999rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.btn.primary {
+  background: #58CC02;
+  color: #FFFFFF;
+  box-shadow: 0 10rpx 24rpx rgba(88, 204, 2, 0.24);
+}
+
+.btn-hover {
+  background: #4CB300;
+}
+
+.btn.ghost {
+  margin-top: 24rpx;
+  background: #FFFFFF;
+  color: #58CC02;
+  border: 2rpx solid #DCEFC8;
+}
+
+.ghost-hover {
+  background: #F7FDF1;
+}

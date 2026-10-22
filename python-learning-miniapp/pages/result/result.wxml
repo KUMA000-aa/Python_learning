@@ -1,0 +1,33 @@
+<view class="page">
+  <view class="card {{isCompleted ? 'pass' : 'fail'}}">
+    <view class="emoji">{{isCompleted ? '🏆' : '💪'}}</view>
+    <view class="title">{{isCompleted ? '本关通过！' : '差一点，再练一次'}}</view>
+    <view class="score">
+      {{scoreText}}<text class="score-unit">分</text>
+    </view>
+
+    <view class="stats">
+      <view class="stat">
+        <view class="num">{{correctCount}}</view>
+        <view class="label">答对</view>
+      </view>
+      <view class="divider"></view>
+      <view class="stat">
+        <view class="num">{{totalCount}}</view>
+        <view class="label">总题数</view>
+      </view>
+      <view class="divider"></view>
+      <view class="stat">
+        <view class="num">{{attempts}}</view>
+        <view class="label">挑战次数</view>
+      </view>
+    </view>
+
+    <view class="hint">{{isCompleted ? '进度已保存，可以挑战下一关了' : '全部答对才算通关，再挑战一次吧'}}</view>
+  </view>
+
+  <view class="actions">
+    <view class="btn primary" hover-class="btn-hover" bindtap="onBackHome">返回首页</view>
+    <view class="btn ghost" hover-class="ghost-hover" bindtap="onRetryLevel">再练一次</view>
+  </view>
+</view>

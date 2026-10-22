@@ -1,0 +1,54 @@
+<view class="page">
+  <view class="topbar">
+    <view class="close" bindtap="onExit">✕</view>
+    <view class="bar">
+      <view class="bar-fill" style="width: {{percent}}%"></view>
+    </view>
+    <view class="counter">{{index + 1}}/{{total}}</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="state">
+    <view class="state-emoji">⏳</view>
+    <view class="state-text">题目加载中…</view>
+  </view>
+
+  <view wx:elif="{{error}}" class="state">
+    <view class="state-emoji">😵</view>
+    <view class="state-text">{{error}}</view>
+    <view class="retry-btn" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <view wx:else class="content">
+    <view class="qtype">{{questionType}}</view>
+    <view class="stem">{{stem}}</view>
+
+    <view class="options">
+      <view
+        class="option {{!answered && selectedLetter === item.letter ? 'selected' : ''}}{{answered && item.letter === correctAnswer ? ' correct' : ''}}{{answered && selectedLetter === item.letter && !isCorrect ? ' wrong' : ''}}"
+        wx:for="{{currentOptions}}"
+        wx:key="letter"
+        data-letter="{{item.letter}}"
+        bindtap="onSelect"
+      >
+        <view class="letter">{{item.letter}}</view>
+        <view class="option-text">{{item.text}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{answered}}" class="feedback {{isCorrect ? 'ok' : 'bad'}}">
+      <view class="fb-title">{{isCorrect ? '答对了 🎉' : '答错了，看看解析'}}</view>
+      <view class="fb-line">正确答案：{{correctAnswer}}</view>
+      <view class="fb-exp" wx:if="{{explanation}}">{{explanation}}</view>
+    </view>
+  </view>
+
+  <view class="footer" wx:if="{{!loading && !error}}">
+    <view
+      class="btn {{answered ? '' : 'disabled'}}"
+      hover-class="{{answered ? 'btn-hover' : ''}}"
+      bindtap="onNext"
+    >
+      {{isLast ? '查看结果' : '下一题'}}
+    </view>
+  </view>
+</view>

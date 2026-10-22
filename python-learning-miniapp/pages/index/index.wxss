@@ -1,0 +1,172 @@
+.page {
+  padding: 32rpx 32rpx 80rpx;
+}
+
+.hero {
+  background: linear-gradient(135deg, #58CC02 0%, #37A000 100%);
+  border-radius: 36rpx;
+  padding: 44rpx 40rpx 36rpx;
+  color: #FFFFFF;
+  box-shadow: 0 16rpx 36rpx rgba(88, 204, 2, 0.22);
+}
+
+.hero-title {
+  font-size: 44rpx;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+}
+
+.hero-sub {
+  font-size: 24rpx;
+  opacity: 0.85;
+  margin-top: 12rpx;
+}
+
+.bar {
+  height: 16rpx;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10rpx;
+  overflow: hidden;
+  margin-top: 32rpx;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #FFFFFF;
+  border-radius: 10rpx;
+  transition: width 0.3s ease;
+}
+
+.hero-meta {
+  font-size: 22rpx;
+  opacity: 0.9;
+  margin-top: 14rpx;
+}
+
+.state {
+  padding: 120rpx 40rpx;
+  text-align: center;
+  color: #8A8A8A;
+  font-size: 26rpx;
+}
+
+.state-emoji {
+  font-size: 64rpx;
+  margin-bottom: 20rpx;
+}
+
+.state-text {
+  margin-bottom: 28rpx;
+  line-height: 1.6;
+}
+
+.retry-btn {
+  display: inline-block;
+  padding: 16rpx 48rpx;
+  border-radius: 999rpx;
+  background: #58CC02;
+  color: #FFFFFF;
+  font-size: 26rpx;
+}
+
+.tip {
+  margin-top: 24rpx;
+  font-size: 22rpx;
+  color: #B0B0B0;
+}
+
+.courses {
+  margin-top: 32rpx;
+}
+
+.course {
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  padding: 32rpx;
+  margin-bottom: 28rpx;
+  box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.04);
+}
+
+.course-title {
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.course-desc {
+  font-size: 24rpx;
+  color: #9A9A9A;
+  margin-top: 8rpx;
+}
+
+.unit {
+  margin-top: 28rpx;
+}
+
+.unit-title {
+  font-size: 26rpx;
+  color: #6E6E6E;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.level {
+  display: flex;
+  align-items: center;
+  padding: 22rpx 24rpx;
+  margin-bottom: 16rpx;
+  border: 2rpx solid #EDEDED;
+  border-radius: 24rpx;
+  background: #FAFAFA;
+}
+
+.level-hover {
+  background: #F2F2F2;
+}
+
+.level.done {
+  border-color: #CFF0B0;
+  background: #F4FCEB;
+}
+
+.level-badge {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #E9E9E9;
+  color: #9C9C9C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  margin-right: 22rpx;
+}
+
+.level.done .level-badge {
+  background: #58CC02;
+  color: #FFFFFF;
+}
+
+.level-info {
+  flex: 1;
+}
+
+.level-title {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.level-meta {
+  font-size: 22rpx;
+  color: #9A9A9A;
+  margin-top: 6rpx;
+}
+
+.level.done .level-meta {
+  color: #58A000;
+}
+
+.level-arrow {
+  font-size: 36rpx;
+  color: #C4C4C4;
+}
