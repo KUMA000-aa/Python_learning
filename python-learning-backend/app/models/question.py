@@ -11,7 +11,7 @@ class Question(Base):
     question_type = Column(String(32), default="single_choice")  # 题型：单选
     stem = Column(Text, nullable=False)                # 题干
     options = Column(Text, nullable=False)             # 选项，用 JSON 字符串存
-    correct_answer = Column(String(16), nullable=False) # 正确答案，比如 "A"
+    correct_answer = Column(Text, nullable=False)      # 正确答案：字母 / 文本 / 代码补全的 JSON 数组
     explanation = Column(Text, nullable=True)          # 解析
     order_index = Column(Integer, default=0)
 

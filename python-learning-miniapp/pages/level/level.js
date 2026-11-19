@@ -7,13 +7,18 @@ const skin = require('../../utils/skin')
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F']
 
-// 后端 question_type 目前只有 single_choice，这里把历史值 choice 也兼容掉
+// 后端 question_type 与展示名的映射，历史值 choice 也兼容掉
 const TYPE_TEXT = {
   single_choice: '单选题',
   choice: '单选题',
   multi_choice: '多选题',
+  true_false: '判断题',
   fill_blank: '填空题',
+  code_fill: '代码补全',
 }
+
+// 这些题型走选项点击，其余走输入框
+const CHOICE_TYPES = ['single_choice', 'choice', 'multi_choice', 'true_false']
 
 Page({
   data: {
@@ -31,11 +36,23 @@ Page({
     percent: 0,
     stem: '',
     questionType: '单选题',
+    // 题型分支：选择/判断、填空、代码补全
+    isChoice: true,
+    isFill: false,
+    isCode: false,
     currentOptions: [],
+    // 填空题输入值
+    fillValue: '',
+    // 代码补全：按空位顺序的输入值，以及切分后的文本/空位片段
+    blankValues: [],
+    codeParts: [],
+    // 填空/代码补全是否已填满，可提交
+    canSubmit: false,
     selectedLetter: '',
     answered: false,
     isCorrect: false,
-    correctAnswer: '',
+    correctAnswer: '', // 展示用正确答案文本
+    correctLetter: '', // 选项高亮用字母（仅选择/判断题）
     explanation: '',
     isLast: false,
     submitting: false,
@@ -118,10 +135,29 @@ Page({
       return
     }
 
+    const type = String(question.question_type || 'single_choice').toLowerCase()
+    const isChoice = CHOICE_TYPES.indexOf(type) >= 0
+    const isFill = type === 'fill_blank'
+    const isCode = type === 'code_fill'
+
     const options = (question.options || []).map((text, i) => ({
       letter: LETTERS[i],
       text,
     }))
+
+    // 代码补全：题干用 ___ 表示空位，切成「文本 / 空位」交替的片段
+    let codeParts = []
+    let blankValues = []
+    if (isCode) {
+      const segments = String(question.stem || '').split('___')
+      segments.forEach((segment, i) => {
+        codeParts.push({ type: 'text', text: segment, key: 't' + i })
+        if (i < segments.length - 1) {
+          codeParts.push({ type: 'blank', index: i, key: 'b' + i })
+          blankValues.push('')
+        }
+      })
+    }
 
     this.startedAt = Date.now()
     // 换题时收起上一题的连击爆发，避免停在新题画面上
@@ -129,13 +165,21 @@ Page({
     this.setData({
       index,
       stem: question.stem,
-      questionType: TYPE_TEXT[question.question_type] || '题目',
+      questionType: TYPE_TEXT[type] || '题目',
+      isChoice,
+      isFill,
+      isCode,
       currentOptions: options,
+      codeParts,
+      blankValues,
+      fillValue: '',
+      canSubmit: false,
       isLast: index === questions.length - 1,
       selectedLetter: '',
       answered: false,
       isCorrect: false,
       correctAnswer: '',
+      correctLetter: '',
       explanation: '',
       comboShow: false,
       brokenCombo: 0,
@@ -230,6 +274,7 @@ Page({
     this.buzz('light')
   },
 
+  // ===== 选择题 / 判断题 =====
   onSelect(e) {
     if (this.data.answered || this.data.submitting) {
       return
@@ -241,58 +286,132 @@ Page({
 
     this.setData({ selectedLetter: letter, submitting: true })
 
-    request({
-      url: '/answers',
-      method: 'POST',
-      data: {
-        question_id: question.id,
-        user_answer: letter,
-        duration_ms: duration,
-      },
+    this.postAnswer({
+      question_id: question.id,
+      user_answer: letter,
+      duration_ms: duration,
     })
-      .then((res) => {
-        const correct = !!res.is_correct
-        const review = this.data.review.concat([
-          {
-            index: this.data.index,
-            isCorrect: correct,
-            correctAnswer: res.correct_answer || '',
-          },
-        ])
+  },
 
-        const patch = {
-          submitting: false,
-          answered: true,
-          isCorrect: correct,
-          correctAnswer: res.correct_answer || '',
-          explanation: res.explanation || '',
-          review,
-        }
+  // ===== 填空题输入 =====
+  onFillInput(e) {
+    const value = e.detail.value || ''
+    this.setData({ fillValue: value, canSubmit: !!value.trim() })
+  },
 
-        // 连击与音效：先算出新状态，再一次性 setData
-        const comboPatch = correct ? this.bumpCombo() : this.breakCombo()
-        Object.assign(patch, comboPatch)
+  // ===== 代码补全输入 =====
+  onBlankInput(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    const blankValues = this.data.blankValues.slice()
+    blankValues[index] = e.detail.value || ''
+    const canSubmit = blankValues.every((v) => !!String(v).trim())
+    this.setData({ blankValues, canSubmit })
+  },
 
-        this.setData(patch)
-        this.refreshPercent()
+  // 填空 / 代码补全提交
+  onSubmitFill() {
+    if (this.data.answered || this.data.submitting || !this.data.canSubmit) {
+      return
+    }
 
-        if (correct) {
-          // 音高随连击上行，听感上"越答越往上走"
-          audio.playCorrect(patch.combo)
-          // 每 5 连击来一段铃声，给个阶段性反馈
-          if (patch.combo % 5 === 0) {
-            audio.playMilestone()
-            this.buzz('light')
-          }
-        } else {
-          audio.playWrong()
-          this.buzz('heavy')
-        }
-      })
+    const question = this.data.questions[this.data.index]
+    const duration = Date.now() - (this.startedAt || Date.now())
+    const data = { question_id: question.id, duration_ms: duration }
+
+    if (this.data.isCode) {
+      data.user_answers = this.data.blankValues.map((v) => String(v).trim())
+    } else {
+      data.user_answer = String(this.data.fillValue).trim()
+    }
+
+    this.setData({ submitting: true })
+    this.postAnswer(data)
+  },
+
+  // 统一提交作答
+  postAnswer(data) {
+    request({ url: '/answers', method: 'POST', data })
+      .then((res) => this.handleAnswerResult(res))
       .catch((err) => {
         this.setData({ submitting: false, selectedLetter: '' })
         wx.showToast({ title: (err && err.message) || '提交失败', icon: 'none' })
       })
+  },
+
+  // 判分回包：更新反馈态、连击、音效
+  handleAnswerResult(res) {
+    const correct = !!res.is_correct
+    const question = this.data.questions[this.data.index]
+    const correctAnswerText = this.formatCorrectAnswer(res, question)
+    const correctLetter = this.data.isChoice
+      ? String(res.correct_answer || '').toUpperCase()
+      : ''
+
+    const review = this.data.review.concat([
+      {
+        index: this.data.index,
+        isCorrect: correct,
+        correctAnswer: correctAnswerText,
+      },
+    ])
+
+    const patch = {
+      submitting: false,
+      answered: true,
+      isCorrect: correct,
+      correctAnswer: correctAnswerText,
+      correctLetter,
+      explanation: res.explanation || '',
+      review,
+    }
+
+    // 连击与音效：先算出新状态，再一次性 setData
+    const comboPatch = correct ? this.bumpCombo() : this.breakCombo()
+    Object.assign(patch, comboPatch)
+
+    this.setData(patch)
+    this.refreshPercent()
+
+    if (correct) {
+      // 音高随连击上行，听感上"越答越往上走"
+      audio.playCorrect(patch.combo)
+      // 每 5 连击来一段铃声，给个阶段性反馈
+      if (patch.combo % 5 === 0) {
+        audio.playMilestone()
+        this.buzz('light')
+      }
+    } else {
+      audio.playWrong()
+      this.buzz('heavy')
+    }
+  },
+
+  // 按题型把正确答案格式化成适合展示的文本
+  formatCorrectAnswer(res, question) {
+    const type = String((question && question.question_type) || 'single_choice').toLowerCase()
+    const raw = res.correct_answer || ''
+
+    if (type === 'code_fill') {
+      if (Array.isArray(res.correct_answers) && res.correct_answers.length) {
+        return res.correct_answers.join(' ｜ ')
+      }
+      return raw
+    }
+    if (type === 'true_false') {
+      return String(raw).toUpperCase() === 'A' ? '正确' : '错误'
+    }
+    if (type === 'fill_blank') {
+      return raw
+    }
+
+    // 单选/多选：字母 + 选项文本
+    const options = (question && question.options) || []
+    const letter = String(raw).toUpperCase()
+    const idx = LETTERS.indexOf(letter)
+    if (idx >= 0 && options[idx]) {
+      return letter + '. ' + options[idx]
+    }
+    return raw
   },
 
   onNext() {

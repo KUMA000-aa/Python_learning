@@ -41,11 +41,13 @@
       </view>
     </view>
 
-    <view class="stem">{{stem}}</view>
+    <!-- 代码补全的题干含代码，统一放到下方代码块里渲染 -->
+    <view class="stem" wx:if="{{!isCode}}">{{stem}}</view>
 
-    <view class="options">
+    <!-- 选择题 / 判断题 -->
+    <view class="options" wx:if="{{isChoice}}">
       <view
-        class="option {{answered ? 'locked ' : ''}}{{!answered && selectedLetter === item.letter ? 'selected ' : ''}}{{answered && item.letter === correctAnswer ? 'correct ' : ''}}{{answered && item.letter === selectedLetter && !isCorrect ? 'wrong' : ''}}"
+        class="option {{answered ? 'locked ' : ''}}{{!answered && selectedLetter === item.letter ? 'selected ' : ''}}{{answered && item.letter === correctLetter ? 'correct ' : ''}}{{answered && item.letter === selectedLetter && !isCorrect ? 'wrong' : ''}}"
         wx:for="{{currentOptions}}"
         wx:key="letter"
         data-letter="{{item.letter}}"
@@ -55,10 +57,41 @@
         <view class="letter">{{item.letter}}</view>
         <view class="option-text">{{item.text}}</view>
         <view class="mark" wx:if="{{answered}}">
-          <block wx:if="{{item.letter === correctAnswer}}">✓</block>
+          <block wx:if="{{item.letter === correctLetter}}">✓</block>
           <block wx:elif="{{item.letter === selectedLetter}}">✕</block>
         </view>
       </view>
+    </view>
+
+    <!-- 填空题 -->
+    <view class="fill-box" wx:if="{{isFill}}">
+      <input
+        class="fill-input"
+        value="{{fillValue}}"
+        placeholder="在此输入答案"
+        disabled="{{answered || submitting}}"
+        bindinput="onFillInput"
+        confirm-type="done"
+      />
+      <view class="type-hint" wx:if="{{!answered}}">输入完成后点下方「提交答案」</view>
+    </view>
+
+    <!-- 代码补全：文本与空位交替渲染 -->
+    <view class="code-box" wx:if="{{isCode}}">
+      <view class="code-block">
+        <block wx:for="{{codeParts}}" wx:key="key">
+          <text wx:if="{{item.type === 'text'}}" class="code-text">{{item.text}}</text>
+          <input
+            wx:else
+            class="blank-input"
+            value="{{blankValues[item.index]}}"
+            data-index="{{item.index}}"
+            disabled="{{answered || submitting}}"
+            bindinput="onBlankInput"
+          />
+        </block>
+      </view>
+      <view class="type-hint" wx:if="{{!answered}}">按空位顺序补全代码，填完点下方「提交答案」</view>
     </view>
   </view>
 
@@ -96,14 +129,27 @@
       <view class="fb-line" wx:if="{{!isCorrect}}">正确答案：{{correctAnswer}}</view>
       <view class="fb-exp" wx:if="{{explanation}}">{{explanation}}</view>
     </view>
-    <view wx:else class="fb idle">选一个选项，立即判分</view>
-
-    <view
-      class="btn {{answered ? '' : 'disabled'}}"
-      hover-class="{{answered ? 'btn-hover' : ''}}"
-      bindtap="onNext"
-    >
-      {{isLast ? '查看结果' : '下一题'}}
+    <view wx:else class="fb idle">
+      {{isFill ? '输入答案后点「提交答案」' : (isCode ? '补全所有空位后点「提交答案」' : '选一个选项，立即判分')}}
     </view>
+
+    <!-- 已答完：下一题 / 查看结果 -->
+    <block wx:if="{{answered}}">
+      <view class="btn" hover-class="btn-hover" bindtap="onNext">
+        {{isLast ? '查看结果' : '下一题'}}
+      </view>
+    </block>
+    <!-- 填空 / 代码补全：提交答案 -->
+    <block wx:elif="{{isFill || isCode}}">
+      <view
+        class="btn {{canSubmit ? '' : 'disabled'}}"
+        hover-class="{{canSubmit ? 'btn-hover' : ''}}"
+        bindtap="onSubmitFill"
+      >提交答案</view>
+    </block>
+    <!-- 选择题：选完自动判分，这里保持禁用态 -->
+    <block wx:else>
+      <view class="btn disabled">{{isLast ? '查看结果' : '下一题'}}</view>
+    </block>
   </view>
 </view>
