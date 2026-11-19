@@ -1,6 +1,6 @@
 # python-learning-miniapp
 
-Python 学习小程序 —— **微信原生小程序前端**。
+Python 学习小程序 —— **微信原生小程序前端**（当前版本 1.1.1）。
 
 ## 技术栈
 
@@ -47,7 +47,7 @@ python-learning-miniapp/
 │   │   ├── skins.wxml          # 每套皮肤用自己的色板画一张「小手机」缩略图
 │   │   ├── skins.wxss
 │   │   └── skins.json
-│   ├── level/                  # 答题页：逐题作答 + 立即判分 + 连击
+│   ├── level/                  # 答题页：单选/判断/填空/代码补全 + 立即判分 + 连击
 │   │   ├── level.js            # 拉题目 → 提交答案 → 结算；连击计数/音效在此驱动
 │   │   ├── level.wxml
 │   │   ├── level.wxss

@@ -18,7 +18,7 @@ python-learning-backend/
 ├── app/
 │   ├── main.py              # FastAPI 入口（include 所有路由）
 │   ├── init_db.py           # 建表脚本（首次运行必跑）
-│   ├── seed.py              # 演示数据（1 课程 / 1 单元 / 2 关卡 / 6 题）
+│   ├── seed.py              # 题库数据（CH1/CH2/CH4，3 章 11 关 69 题）
 │   ├── core/
 │   │   ├── config.py        # 配置（读 .env）
 │   │   ├── database.py      # SQLAlchemy 引擎 + 会话
@@ -79,7 +79,7 @@ WX_APPID=
 WX_SECRET=
 "@ | Out-File -Encoding utf8 .env
 
-# 5. 建表 + 导入演示数据
+# 5. 建表 + 导入题库数据
 python -m app.init_db
 python -m app.seed
 
@@ -163,16 +163,18 @@ Swagger 页面里点右上角 **Authorize** 粘贴 token 即可自动带。
 1. POST /auth/wx-login        body: {"code": "anything"}
    → 复制返回的 token → 点 Authorize 粘贴
 
-2. GET  /courses              → 记下 level 的 id（演示数据是 1、2）
+2. GET  /courses              → 记下某个 level 的 id（题库共 3 章 11 关）
 
-3. GET  /levels/1/questions   → 看题目
+3. GET  /levels/{id}/questions → 看题目（单选/判断/填空/代码补全）
 
-4. POST /answers × 3 题      body: {"question_id": 1, "user_answer": "B"}
-                              演示数据答案全是 B
+4. POST /answers              → 按题型提交：
+                              单选/判断：{"question_id": 1, "user_answer": "B"}
+                              填空：    {"question_id": 1, "user_answer": "append"}
+                              代码补全：{"question_id": 1, "user_answers": ["pop"]}
 
-5. POST /progress/levels/1/complete  → 结算 → score=100, is_completed=true
+5. POST /progress/levels/{id}/complete → 结算，返回星级 / 经验 / 等级
 
-6. GET  /progress/levels/1   → 确认进度
+6. GET  /progress/levels/{id}  → 确认进度
 ```
 
 ⚠️ 答题和结算必须用**同一个 token**（同一次登录），进度按用户隔离。
@@ -185,8 +187,8 @@ Swagger 页面里点右上角 **Authorize** 粘贴 token 即可自动带。
 |---|---|
 | 经验来源 | **首次有效闯关**：本关每道题都答完且至少答对 1 题 |
 | 通关奖励 | `50 + 星级 × 30` → 0★ 50 / 1★ 80 / 2★ 110 / 3★ 140 |
-| 探索奖励 | `答对题数 × 15`，3 题全对再加 45 |
-| 一关满分 | 140 + 45 = **185 EXP** |
+| 探索奖励 | `答对题数 × 15`（随关卡题量变化） |
+| 一关经验 | 通关奖励 + 探索奖励，随关卡题量和答对题数变化 |
 | 重复闯关 | 经验 +0；`user_progress.exp_awarded` 标记后永不再发 |
 | 0 分 | 不发经验，可以重新挑战 |
 | 升级曲线 | `need(lv) = 120 + 100×(lv-1) + 12×(lv-1)²` → 120 / 232 / 368 / 528 / 712 / 920 …，上限 **Lv30** |
@@ -262,7 +264,7 @@ A: 直接删 `app.db`，再跑 `python -m app.init_db` + `python -m app.seed`。
 或者 seed 脚本本身就会先清空旧数据。
 
 **Q: 想加新的课程/关卡/题目？**
-A: 改 `seed.py` 里的演示数据结构（课程 → 单元 → 关卡 → 题目），然后 `python -m app.seed`。
+A: 改 `seed.py` 里的题库数据结构（课程 → 单元 → 关卡 → 题目），然后 `python -m app.seed`。
 生产环境建议建个管理后台直接操作数据库。
 
 **Q: 想切到 MySQL？**

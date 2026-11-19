@@ -3,6 +3,8 @@
 多邻国风格的 Python 编程学习微信小程序。
 
 > 本仓库包含**前端（微信小程序）**和**后端（FastAPI）**两个独立项目，按子目录组织。
+>
+> 当前版本：**1.1.1**
 
 ---
 
@@ -26,7 +28,7 @@ Python-learning/
     │   ├── routers/           # auth / courses / levels / answers / progress / profile / leaderboard
     │   ├── schemas/           # Pydantic 出入参
     │   ├── init_db.py         # 建表 + 轻量迁移（幂等）
-    │   ├── seed.py            # 演示课程数据
+    │   ├── seed.py            # 题库数据（CH1/CH2/CH4，共 69 题）
     │   └── seed_leaderboard.py# 排行榜演示同学
     ├── requirements.txt
     └── README.md              # 后端详细说明
@@ -38,7 +40,7 @@ Python-learning/
 
 ### 学习链路
 - **关卡地图**：课程 → 单元 → 关卡，蛇形排列，显示三态（已通关 / 进行中 / 未开始）与历史最佳星级
-- **答题**：逐题作答，立即判分并展示解析；单选为主，题型字段已预留扩展
+- **答题**：逐题作答，立即判分并展示解析；支持单选、判断、填空、代码补全（多空）四种题型
 - **结算**：得分、星级、正确率、逐题回顾；答完全部题目才能触发首次闯关奖励
 
 ### 成长体系
@@ -53,6 +55,14 @@ Python-learning/
 - **排行榜**：闯关进度 / 每日打卡 / 学习小组三张榜，一次请求全量返回
 - **个人主页**：通关进度、正确率、平均分、学习天数、答题次数、头像框与皮肤收藏
 - **答题体验**：连击计数与分档文案、连击音效、震动反馈、静音开关、结算分数滚动与星级动画
+
+### 题库内容
+
+按头歌课程整理，共 **3 章 11 关 69 题**：
+
+- **CH1-Python基础**（4 关）：行与缩进 / 标识符与保留字 / 注释 / 输入输出
+- **CH2-Python序列之列表**（4 关）：增删改 / 排序 / 数值列表 / 切片
+- **CH4-Python控制结构与字符串**（3 关）：字符串拼接 / 字符转换 / 查找替换
 
 ---
 
@@ -91,7 +101,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 
 看到 `Uvicorn running on http://0.0.0.0:8001` 即成功。浏览器访问 `http://127.0.0.1:8001/docs` 可在线调试所有接口。
 
-> 已有旧版数据库时不用删除：服务启动会自动补齐新增字段，并完成星级/经验的历史数据回填（幂等，只跑一次）。
+> 已有旧版数据库时，新增字段会自动补齐；但题库内容需要用 `python -m app.seed` 重新导入（新版本为 3 章 11 关 69 题）。
 
 ### 2. 启动前端（微信小程序）
 
@@ -109,6 +119,31 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 6. 点击 **编译**
 
 > 本地开发默认走 mock 登录（`USE_MOCK_LOGIN = true` + 后端未配 `WX_APPID`），不需要真实 AppID 也能跑通全流程。要接真实微信登录时，把 `WX_APPID`/`WX_SECRET` 填进后端 `.env`，并把 `USE_MOCK_LOGIN` 改成 `false`。
+
+---
+
+## 已有旧版本？更新到 1.1.1
+
+```powershell
+# 1. 拉取最新代码（有本地改动先 git stash）
+git checkout main
+git pull origin main
+
+# 2. 更新依赖
+cd python-learning-backend
+venv\Scripts\activate
+pip install -r requirements.txt
+
+# 3. 重新导入题库（由 6 题变为 69 题）
+python -m app.seed
+
+# 4. 重启后端
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8001
+```
+
+- `.env`、`venv`、`app.db` 都在 `.gitignore` 里，更新不会覆盖。
+- 想清空旧进度重新开始：删除 `app.db` 后依次执行 `python -m app.init_db`、`python -m app.seed`、`python -m app.seed_leaderboard`。
+- 小程序端重新「编译」即可，`utils/config.js` 的 `BASE_URL` 保持你自己的地址。
 
 ---
 
