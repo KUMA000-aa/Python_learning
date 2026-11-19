@@ -1,6 +1,10 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/rank/rank",
+    "pages/review/review",
+    "pages/profile/profile",
+    "pages/skins/skins",
     "pages/level/level",
     "pages/result/result"
   ],

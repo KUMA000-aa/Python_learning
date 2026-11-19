@@ -1,5 +1,9 @@
 {
   "navigationBarTitleText": "Python 学习",
   "enablePullDownRefresh": true,
-  "backgroundTextStyle": "dark"
+  "backgroundTextStyle": "light",
+  "backgroundColor": "#58CC02",
+  "usingComponents": {
+    "tabbar": "/components/tabbar/tabbar"
+  }
 }

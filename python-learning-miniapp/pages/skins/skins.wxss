@@ -1,0 +1,362 @@
+.page {
+  padding: 24rpx 32rpx calc(60rpx + env(safe-area-inset-bottom));
+}
+
+/* ===== 顶部说明 ===== */
+.intro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 8rpx 4rpx 26rpx;
+}
+
+.intro-title {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: var(--sk-text, #2F2F2F);
+  letter-spacing: 1rpx;
+}
+
+.intro-sub {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--sk-muted, #A8A8A8);
+}
+
+.intro-count {
+  display: flex;
+  align-items: baseline;
+}
+
+.ic-num {
+  font-size: 40rpx;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--sk-primary, #58CC02);
+}
+
+.ic-dim {
+  font-size: 22rpx;
+  color: var(--sk-muted, #B8B8B8);
+  font-weight: 600;
+}
+
+/* ===== 网格 ===== */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.tile {
+  width: 48.6%;
+  margin-bottom: 24rpx;
+  padding: 14rpx 14rpx 16rpx;
+  border-radius: 30rpx;
+  background: var(--sk-card, #FFFFFF);
+  border: 3rpx solid transparent;
+  box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.045);
+  transition: transform 0.12s ease, border-color 0.2s ease;
+}
+
+.tile.on {
+  border-color: var(--sk-primary, #58CC02);
+  box-shadow: 0 10rpx 24rpx var(--sk-glow, rgba(88, 204, 2, 0.18));
+}
+
+.tile.locked {
+  opacity: 0.86;
+}
+
+.tile-hover {
+  transform: translateY(4rpx);
+}
+
+/* ===== 缩略图：一张「小手机」，全部用该皮肤自己的色板绘制 ===== */
+.phone {
+  position: relative;
+  padding: 12rpx;
+  border-radius: 22rpx;
+  overflow: hidden;
+}
+
+.ph-hero {
+  height: 92rpx;
+  border-radius: 14rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.22);
+  padding: 14rpx 14rpx 12rpx;
+  box-sizing: border-box;
+}
+
+.ph-title {
+  height: 12rpx;
+  width: 62%;
+  border-radius: 6rpx;
+  opacity: 0.95;
+}
+
+.ph-sub {
+  height: 8rpx;
+  width: 84%;
+  border-radius: 4rpx;
+  margin-top: 9rpx;
+  opacity: 0.62;
+}
+
+.ph-hbar {
+  height: 8rpx;
+  border-radius: 4rpx;
+  margin-top: 12rpx;
+  overflow: hidden;
+}
+
+.ph-hfill {
+  height: 100%;
+  border-radius: 4rpx;
+}
+
+.ph-body {
+  padding-top: 12rpx;
+}
+
+.ph-card {
+  padding: 12rpx;
+  border-radius: 14rpx;
+  border: 2rpx solid transparent;
+}
+
+.ph-line {
+  height: 8rpx;
+  width: 68%;
+  border-radius: 4rpx;
+  opacity: 0.92;
+}
+
+.ph-line.short {
+  width: 42%;
+  margin-top: 7rpx;
+  opacity: 0.5;
+}
+
+.ph-track {
+  height: 7rpx;
+  border-radius: 4rpx;
+  margin-top: 10rpx;
+  overflow: hidden;
+}
+
+.ph-fill {
+  height: 100%;
+  border-radius: 4rpx;
+}
+
+.ph-btn {
+  height: 22rpx;
+  width: 52%;
+  border-radius: 999rpx;
+  margin-top: 10rpx;
+}
+
+.ph-lock {
+  position: absolute;
+  right: 10rpx;
+  top: 10rpx;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.42);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== 卡片底部信息 ===== */
+.tile-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14rpx;
+  padding: 0 2rpx;
+}
+
+.tile-name {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: var(--sk-text, #2F2F2F);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tile-emoji {
+  font-size: 22rpx;
+  margin-right: 4rpx;
+}
+
+.tile-rarity {
+  flex-shrink: 0;
+  margin-left: 8rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  font-size: 17rpx;
+  font-weight: 800;
+}
+
+.tile-state {
+  margin-top: 6rpx;
+  padding: 0 2rpx;
+  font-size: 19rpx;
+  color: var(--sk-muted, #A8A8A8);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tile-state.using {
+  color: var(--sk-primary, #58CC02);
+  font-weight: 800;
+}
+
+.tile-state.locked {
+  color: var(--sk-muted, #B0B0B0);
+}
+
+.foot {
+  margin-top: 12rpx;
+  text-align: center;
+  font-size: 20rpx;
+  color: var(--sk-muted, #B0B0B0);
+  line-height: 1.6;
+}
+
+/* ===== 未解锁弹层 ===== */
+.mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.42);
+  z-index: 20;
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 21;
+  padding: 36rpx 40rpx calc(40rpx + env(safe-area-inset-bottom));
+  background: var(--sk-card, #FFFFFF);
+  border-radius: 40rpx 40rpx 0 0;
+  box-shadow: 0 -10rpx 40rpx rgba(0, 0, 0, 0.12);
+  animation: sheetUp 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes sheetUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.sheet-top {
+  display: flex;
+  align-items: center;
+}
+
+.sheet-emoji {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 28rpx;
+  background: var(--sk-primary-soft, #F7FBF2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+  margin-right: 22rpx;
+}
+
+.sheet-head {
+  flex: 1;
+  min-width: 0;
+}
+
+.sheet-name {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: var(--sk-text, #2F2F2F);
+}
+
+.sheet-rarity {
+  display: inline-block;
+  margin-top: 8rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 18rpx;
+  font-weight: 800;
+}
+
+.sheet-desc {
+  margin-top: 24rpx;
+  font-size: 25rpx;
+  line-height: 1.7;
+  color: var(--sk-sub, #5B5B5B);
+}
+
+.sheet-tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 18rpx;
+}
+
+.stag {
+  margin-right: 12rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  background: var(--sk-track, #F2F4F6);
+  color: var(--sk-sub, #6E6E6E);
+  font-size: 19rpx;
+}
+
+.sheet-lock {
+  margin-top: 24rpx;
+  padding: 18rpx 22rpx;
+  border-radius: 20rpx;
+  background: var(--sk-primary-soft, #F7FBF2);
+  color: var(--sk-sub, #6E6E6E);
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.sheet-actions {
+  display: flex;
+  margin-top: 30rpx;
+}
+
+.sheet-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.sheet-btn.ghost {
+  margin-right: 20rpx;
+  background: var(--sk-track, #F2F4F6);
+  color: var(--sk-sub, #6E6E6E);
+}
+
+.sheet-btn.main {
+  background: var(--sk-primary, #58CC02);
+  color: var(--sk-on-primary, #FFFFFF);
+  box-shadow: 0 6rpx 0 var(--sk-primary-dark, #46A302);
+}

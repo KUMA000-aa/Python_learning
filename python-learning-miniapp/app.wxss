@@ -1,6 +1,133 @@
+/* ============================================================
+   全局样式 + 设计变量说明
+   主色   #58CC02  绿（多邻国风主色）
+   辅色   #1CB0F6  蓝 / #CE82FF 紫 / #FF9600 橙 / #FF4B4B 红
+   强调   #FFC800  金
+   圆角   卡片 32rpx，按钮 999rpx
+   ============================================================ */
+
 page {
   background: #F7F7F9;
   color: #3C3C3C;
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
   font-size: 28rpx;
+}
+
+view,
+text {
+  box-sizing: border-box;
+}
+
+/* ---------- 皮肤根容器 ----------
+   页面根节点挂 class="page sk-root" + style="{{skinStyle}}"。
+   skinStyle 里是一串 --sk-* 自定义属性，下面所有颜色都从这些变量取，
+   所以换皮肤只需要后端改色板，页面样式一行都不用动。 */
+.sk-root {
+  min-height: 100vh;
+  background-color: var(--sk-bg, #F7F7F9);
+  /* 顶部一层很淡的氛围光，让纯色底不那么闷 */
+  background-image: radial-gradient(
+    120% 38% at 50% 0%,
+    var(--sk-glow, rgba(88, 204, 2, 0.1)),
+    rgba(0, 0, 0, 0) 72%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 760rpx;
+  background-position: 0 0;
+  color: var(--sk-text, #3C3C3C);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ---------- 通用状态区：加载 / 错误 / 空 ---------- */
+.state {
+  padding: 120rpx 60rpx;
+  text-align: center;
+  color: var(--sk-muted, #8A8A8A);
+  font-size: 26rpx;
+}
+
+.state-emoji {
+  font-size: 76rpx;
+  line-height: 1;
+  margin-bottom: 24rpx;
+}
+
+.state-text {
+  font-size: 28rpx;
+  color: var(--sk-sub, #6E6E6E);
+  font-weight: 600;
+  line-height: 1.6;
+  margin-bottom: 16rpx;
+}
+
+.state-hint {
+  font-size: 22rpx;
+  color: var(--sk-muted, #B0B0B0);
+  line-height: 1.7;
+  margin-bottom: 32rpx;
+}
+
+.retry-btn {
+  display: inline-block;
+  padding: 18rpx 52rpx;
+  border-radius: 999rpx;
+  background: var(--sk-primary, #58CC02);
+  color: var(--sk-on-primary, #FFFFFF);
+  font-size: 26rpx;
+  font-weight: 700;
+  box-shadow: 0 6rpx 0 var(--sk-primary-dark, #46A302);
+}
+
+.retry-hover {
+  background: var(--sk-primary-dark, #4CB300);
+  transform: translateY(3rpx);
+  box-shadow: 0 3rpx 0 var(--sk-primary-dark, #46A302);
+}
+
+/* ---------- 骨架屏 ---------- */
+.sk-wrap {
+  padding: 32rpx 0;
+}
+
+.sk {
+  background: var(--sk-track, #EAEAEA);
+  border-radius: 32rpx;
+  margin-bottom: 28rpx;
+  animation: skPulse 1.2s ease-in-out infinite;
+}
+
+.sk-hero {
+  height: 280rpx;
+}
+
+.sk-card {
+  height: 220rpx;
+}
+
+.sk-card.short {
+  height: 150rpx;
+}
+
+.sk-tip {
+  text-align: center;
+  font-size: 24rpx;
+  color: #B0B0B0;
+  padding-top: 8rpx;
+}
+
+@keyframes skPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+/* ---------- 通用动画 ---------- */
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.86); }
+  60% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10rpx); }
 }

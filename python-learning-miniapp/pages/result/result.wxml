@@ -1,33 +1,145 @@
-<view class="page">
-  <view class="card {{isCompleted ? 'pass' : 'fail'}}">
-    <view class="emoji">{{isCompleted ? '🏆' : '💪'}}</view>
-    <view class="title">{{isCompleted ? '本关通过！' : '差一点，再练一次'}}</view>
-    <view class="score">
-      {{scoreText}}<text class="score-unit">分</text>
-    </view>
-
-    <view class="stats">
-      <view class="stat">
-        <view class="num">{{correctCount}}</view>
-        <view class="label">答对</view>
-      </view>
-      <view class="divider"></view>
-      <view class="stat">
-        <view class="num">{{totalCount}}</view>
-        <view class="label">总题数</view>
-      </view>
-      <view class="divider"></view>
-      <view class="stat">
-        <view class="num">{{attempts}}</view>
-        <view class="label">挑战次数</view>
-      </view>
-    </view>
-
-    <view class="hint">{{isCompleted ? '进度已保存，可以挑战下一关了' : '全部答对才算通关，再挑战一次吧'}}</view>
+<view class="page sk-root {{skinClass}}" style="{{skinStyle}}">
+  <!-- ===== 无数据兜底 ===== -->
+  <view wx:if="{{!hasData}}" class="state">
+    <view class="state-emoji">🤔</view>
+    <view class="state-text">没有找到本次成绩</view>
+    <view class="state-hint">结算数据只在本次答题流程中保留，回首页重新挑战一次即可</view>
+    <view class="retry-btn" hover-class="retry-hover" bindtap="onBackHome">返回首页</view>
   </view>
 
-  <view class="actions">
-    <view class="btn primary" hover-class="btn-hover" bindtap="onBackHome">返回首页</view>
-    <view class="btn ghost" hover-class="ghost-hover" bindtap="onRetryLevel">再练一次</view>
-  </view>
+  <block wx:else>
+    <!-- ===== 成绩卡 ===== -->
+    <view class="card {{isCompleted ? 'pass' : 'fail'}}">
+      <view class="emoji">{{isCompleted ? '🏆' : '💪'}}</view>
+      <view class="title">{{isCompleted ? '本关通过！' : '差一点，再练一次'}}</view>
+      <view class="level-name" wx:if="{{levelTitle}}">{{levelTitle}}</view>
+
+      <!-- 星级：三颗星按获得数量依次点亮 -->
+      <view class="stars">
+        <text
+          class="star {{item.on ? 'on' : ''}}"
+          wx:for="{{starList}}"
+          wx:key="k"
+          style="animation-delay: {{item.delay}}s"
+        >★</text>
+      </view>
+      <view class="star-line">
+        <text class="star-line-main">{{starTitle}}</text>
+        <text class="star-best" wx:if="{{bestStars > stars}}">· 历史最佳 {{bestStars}} 颗</text>
+      </view>
+      <view class="star-hint" wx:if="{{starHint}}">{{starHint}}</view>
+
+      <view class="score {{scoreRolling ? 'rolling' : ''}} {{scoreDone ? 'done' : ''}}">
+        {{scoreText}}<text class="score-unit">分</text>
+      </view>
+
+      <view class="stats">
+        <view class="stat">
+          <view class="num">{{accuracy}}<text class="num-unit" wx:if="{{hasCounts}}">%</text></view>
+          <view class="label">正确率</view>
+        </view>
+        <view class="divider"></view>
+        <view class="stat">
+          <view class="num">
+            <block wx:if="{{hasCounts}}">{{correctCount}}<text class="num-dim">/{{totalCount}}</text></block>
+            <block wx:else>—</block>
+          </view>
+          <view class="label">答对 / 总题</view>
+        </view>
+        <view class="divider"></view>
+        <view class="stat">
+          <view class="num">{{attempts}}</view>
+          <view class="label">挑战次数</view>
+        </view>
+      </view>
+
+      <!-- 连击记录：只在打出 2 连以上时出现，附带一句专属评语 -->
+      <view class="combo-note tier-{{comboTier}}" wx:if="{{maxCombo >= 2}}">
+        <text class="cn-fire">🔥</text>
+        <view class="cn-body">
+          <view class="cn-line">
+            <text class="cn-text">最高连击 ×{{maxCombo}}</text>
+            <text class="cn-tag" wx:if="{{comboTag}}">{{comboTag}}</text>
+          </view>
+          <view class="cn-tip" wx:if="{{comboTip}}">{{comboTip}}</view>
+        </view>
+      </view>
+
+      <!-- ===== 经验与等级 ===== -->
+      <view class="exp-card {{levelUp ? 'up' : ''}}" wx:if="{{hasExp}}">
+        <view class="ec-head">
+          <view class="ec-badge" style="{{levelUp ? '' : 'background:' + tierColor}}">Lv{{level}}</view>
+          <view class="ec-main">
+            <view class="ec-title">
+              <text class="ec-name">{{levelTitle}}</text>
+              <text class="ec-gain" wx:if="{{expGained > 0}}">+{{expGained}} EXP</text>
+              <text class="ec-gain zero" wx:else>+0 EXP</text>
+            </view>
+            <view class="ec-sub" wx:if="{{expNeed > 0}}">{{expInLevel}} / {{expNeed}} EXP<text wx:if="{{expGained > 0}}"> · 累计 {{expTotal}}</text></view>
+            <view class="ec-sub" wx:else>已达最高等级 · 累计 {{expTotal}} EXP</view>
+          </view>
+        </view>
+
+        <view class="ec-bar">
+          <view class="ec-fill" style="width: {{expBarWidth}}%"></view>
+        </view>
+        <view class="ec-note">{{expNote}}</view>
+
+        <view class="ec-levelup {{tierUp ? 'tierup' : ''}}" wx:if="{{levelUp}}">
+          <text class="el-spark">✨</text>
+          <text class="el-text" wx:if="{{tierUp}}">晋级！{{prevTierName}} → {{tierName}} · Lv{{level}} {{levelTitle}}</text>
+          <text class="el-text" wx:else>升级！Lv{{prevLevel}} → Lv{{level}} · {{levelTitle}}</text>
+        </view>
+
+        <view class="ec-frames" wx:if="{{framesUnlocked.length}}">
+          <view class="ef-title">解锁新头像框</view>
+          <view class="ef-list">
+            <view class="ef-item" wx:for="{{framesUnlocked}}" wx:key="id">
+              <text class="ef-emoji">{{item.emoji}}</text>
+              <text class="ef-name">{{item.name}}</text>
+            </view>
+          </view>
+          <view class="ef-hint">去「我的」页面可以切换佩戴</view>
+        </view>
+
+        <view class="ec-frames" wx:if="{{skinsUnlocked.length}}">
+          <view class="ef-title">解锁新皮肤</view>
+          <view class="ef-list">
+            <view class="ef-item" wx:for="{{skinsUnlocked}}" wx:key="id" style="background: {{item.light}}">
+              <text class="ef-emoji">{{item.emoji}}</text>
+              <text class="ef-name">{{item.name}}</text>
+            </view>
+          </view>
+          <view class="ef-hint">去「我的 → 皮肤」可以整套换上</view>
+        </view>
+      </view>
+
+      <!-- ===== 逐题回顾 ===== -->
+      <view class="review" wx:if="{{review.length}}">
+        <view class="review-title">逐题回顾</view>
+        <view class="review-list">
+          <view class="rv {{item.ok ? 'ok' : 'bad'}}" wx:for="{{review}}" wx:key="no">
+            <text class="rv-no">第{{item.no}}题</text>
+            <text class="rv-icon">{{item.ok ? '✓' : '✕'}}</text>
+            <text class="rv-ans" wx:if="{{!item.ok}}">正确 {{item.correctAnswer}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="hint">
+        {{isCompleted ? '进度已保存，可以挑战下一关了' : '全部答对才算通关，再挑战一次吧'}}
+      </view>
+    </view>
+
+    <!-- ===== 操作区 ===== -->
+    <view class="actions">
+      <view wx:if="{{nextId}}" class="btn primary" hover-class="btn-hover" bindtap="onNextLevel">
+        下一关 ›
+      </view>
+      <view class="btn {{nextId ? 'ghost' : 'primary'}}" hover-class="{{nextId ? 'ghost-hover' : 'btn-hover'}}" bindtap="onRetryLevel">
+        再练一次
+      </view>
+      <view class="back-home" bindtap="onBackHome">返回首页</view>
+    </view>
+  </block>
 </view>

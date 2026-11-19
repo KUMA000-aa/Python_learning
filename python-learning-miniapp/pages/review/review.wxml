@@ -1,0 +1,89 @@
+<view class="page sk-root {{skinClass}}" style="{{skinStyle}}">
+  <!-- ===== 页面标题 ===== -->
+  <view class="head">
+    <view class="head-row">
+      <view class="head-title">📝 错题复习</view>
+      <view class="head-total" wx:if="{{!loading && !error && total > 0}}">{{total}} 道</view>
+    </view>
+    <view class="head-sub">
+      <block wx:if="{{loading}}">正在整理你的错题…</block>
+      <block wx:elif="{{total > 0}}">点选项就能原地重做，答对后自动移出错题本{{corrected > 0 ? '（本次已订正 ' + corrected + ' 道）' : ''}}</block>
+      <block wx:else>只收录「最新一次作答仍然答错」的题目</block>
+    </view>
+  </view>
+
+  <!-- ===== 加载 ===== -->
+  <view wx:if="{{loading}}" class="sk-wrap">
+    <view class="sk sk-card"></view>
+    <view class="sk sk-card"></view>
+    <view class="sk-tip">加载中…</view>
+  </view>
+
+  <!-- ===== 出错 ===== -->
+  <view wx:elif="{{error}}" class="state">
+    <view class="state-emoji">🔌</view>
+    <view class="state-text">{{error}}</view>
+    <view class="state-hint">请确认后端已启动（端口 8001）</view>
+    <view class="retry-btn" hover-class="retry-hover" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <!-- ===== 没有错题 ===== -->
+  <view wx:elif="{{total === 0}}" class="state">
+    <view class="state-emoji">🎉</view>
+    <view class="state-text">错题本是空的</view>
+    <view class="state-hint">去闯几关吧，答错的题会自动收进这里</view>
+  </view>
+
+  <!-- ===== 错题列表 ===== -->
+  <block wx:else>
+    <view class="card" wx:for="{{list}}" wx:for-item="q" wx:for-index="qi" wx:key="qid">
+      <view class="card-top">
+        <view class="lv-tag">{{q.levelTitle}}</view>
+        <view class="q-no">第 {{qi + 1}} 题</view>
+      </view>
+
+      <view class="stem">{{q.stem}}</view>
+
+      <view class="last-pick" wx:if="{{!q.answered}}">
+        上次选了 <text class="last-letter">{{q.userAnswer}}</text>
+      </view>
+
+      <view class="options">
+        <view
+          class="opt {{q.answered && opt.letter === q.correctAnswer ? 'correct ' : ''}}{{q.answered && opt.letter === q.selected && !q.ok ? 'wrong' : ''}}"
+          wx:for="{{q.options}}"
+          wx:for-item="opt"
+          wx:key="letter"
+          data-qindex="{{qi}}"
+          data-letter="{{opt.letter}}"
+          bindtap="onAnswer"
+          hover-class="{{q.answered ? '' : 'opt-hover'}}"
+        >
+          <view class="letter">{{opt.letter}}</view>
+          <view class="opt-text">{{opt.text}}</view>
+          <view class="mark" wx:if="{{q.answered}}">
+            <block wx:if="{{opt.letter === q.correctAnswer}}">✓</block>
+            <block wx:elif="{{opt.letter === q.selected}}">✕</block>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{q.answered}}" class="result {{q.ok ? 'ok' : 'bad'}}">
+        <block wx:if="{{q.ok}}">✓ 订正成功，这题已移出错题本</block>
+        <block wx:else>✕ 还不对，正确答案是 {{q.correctAnswer}}</block>
+      </view>
+
+      <view class="foot">
+        <view class="exp-toggle" bindtap="toggleExp" data-qindex="{{qi}}">
+          {{q.showExp ? '收起解析 ∧' : '查看解析 ∨'}}
+        </view>
+        <view class="go-level" bindtap="onGoLevel" data-level="{{q.levelId}}">去这一关 ›</view>
+      </view>
+
+      <view class="exp" wx:if="{{q.showExp}}">{{q.explanation || '这题还没有写解析'}}</view>
+    </view>
+  </block>
+
+  <view class="tabbar-space"></view>
+  <tabbar id="tabbar" current="review" />
+</view>

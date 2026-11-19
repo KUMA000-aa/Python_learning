@@ -1,0 +1,93 @@
+<view class="page sk-root {{skinClass}} {{showMine ? 'has-mine' : ''}}" style="{{skinStyle}}">
+  <!-- ===== 标题 ===== -->
+  <view class="head">
+    <view class="head-main">
+      <view class="title">排行榜</view>
+      <view class="sub">{{totalText || '高手都在这里'}}</view>
+    </view>
+    <view class="head-icon">🏆</view>
+  </view>
+
+  <!-- ===== 榜单切换 ===== -->
+  <view class="seg">
+    <view
+      class="seg-item {{index === tabIndex ? 'on' : ''}}"
+      wx:for="{{boards}}"
+      wx:key="key"
+      data-index="{{index}}"
+      bindtap="onTab"
+      hover-class="seg-hover"
+    >
+      <text class="seg-icon">{{item.icon}}</text>
+      <text class="seg-text">{{item.name}}</text>
+    </view>
+  </view>
+  <view class="tip">{{tip}}</view>
+
+  <!-- ===== 加载 ===== -->
+  <view wx:if="{{loading}}" class="sk-wrap">
+    <view class="sk sk-card"></view>
+    <view class="sk sk-card short"></view>
+    <view class="sk-tip">正在拉取榜单…</view>
+  </view>
+
+  <!-- ===== 错误 ===== -->
+  <view wx:elif="{{error}}" class="state">
+    <view class="state-emoji">🔌</view>
+    <view class="state-text">{{error}}</view>
+    <view class="state-hint">请确认后端已启动（端口 8001）</view>
+    <view class="retry-btn" hover-class="retry-hover" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <block wx:else>
+    <!-- ===== 空态 ===== -->
+    <view wx:if="{{isEmpty}}" class="state">
+      <view class="state-emoji">🌱</view>
+      <view class="state-text">榜单还空着</view>
+      <view class="state-hint">去闯一关，就能出现在榜上</view>
+      <view class="retry-btn" hover-class="retry-hover" bindtap="goStudy">去学习</view>
+    </view>
+
+    <block wx:else>
+      <!-- ===== 前三名领奖台 ===== -->
+      <view class="podium">
+        <view class="p-item r{{item.rank}}" wx:for="{{podium}}" wx:key="rank">
+          <view class="p-medal">{{item.medal}}</view>
+          <view class="p-avatar c{{item.ci}} {{item.rank === 1 ? 'big' : ''}}">{{item.avatar}}</view>
+          <view class="p-name">{{item.name}}</view>
+          <view class="p-main">{{item.main}}</view>
+          <view class="p-base">{{item.sub}}</view>
+        </view>
+      </view>
+
+      <!-- ===== 第 4 名往后 ===== -->
+      <view class="list" wx:if="{{rest.length}}">
+        <view class="row {{item.isMe ? 'me' : ''}}" wx:for="{{rest}}" wx:key="rank">
+          <view class="row-rank">{{item.rank}}</view>
+          <view class="row-avatar c{{item.ci}}">{{item.avatar}}</view>
+          <view class="row-main">
+            <view class="row-name">
+              <text>{{item.name}}</text>
+              <text class="me-tag" wx:if="{{item.isMe}}">我</text>
+            </view>
+            <view class="row-sub">{{item.sub}}</view>
+          </view>
+          <view class="row-value">{{item.main}}</view>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <!-- ===== 我的排名（不在前三时固定在底部） ===== -->
+  <view class="mine" wx:if="{{showMine}}">
+    <view class="mine-rank">{{me.rank}}</view>
+    <view class="row-avatar c{{me.ci}}">{{me.avatar}}</view>
+    <view class="row-main">
+      <view class="row-name">我的排名</view>
+      <view class="row-sub">{{me.sub}}</view>
+    </view>
+    <view class="row-value">{{me.main}}</view>
+  </view>
+
+  <tabbar current="rank" />
+</view>

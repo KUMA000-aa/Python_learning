@@ -1,29 +1,36 @@
 page {
-  background: #FFFFFF;
+  background: var(--sk-bg, #FFFFFF);
 }
 
 .page {
   min-height: 100vh;
-  padding-bottom: 200rpx;
+  /* 底部固定区最高约 420rpx，留出安全距离避免遮挡题目 */
+  padding-bottom: 480rpx;
   box-sizing: border-box;
 }
 
+/* ===== 顶部进度条 ===== */
 .topbar {
   display: flex;
   align-items: center;
-  padding: 24rpx 32rpx;
+  padding: 28rpx 32rpx;
 }
 
 .close {
   width: 56rpx;
-  font-size: 32rpx;
-  color: #B0B0B0;
+  font-size: 34rpx;
+  color: var(--sk-muted, #C4C4C4);
+  font-weight: 700;
+}
+
+.close-hover {
+  color: #8A8A8A;
 }
 
 .bar {
   flex: 1;
-  height: 16rpx;
-  background: #EFEFEF;
+  height: 18rpx;
+  background: var(--sk-track, #EFEFEF);
   border-radius: 10rpx;
   overflow: hidden;
   margin: 0 20rpx;
@@ -31,98 +38,171 @@ page {
 
 .bar-fill {
   height: 100%;
-  background: #58CC02;
+  background: var(--sk-primary, #58CC02);
   border-radius: 10rpx;
-  transition: width 0.25s ease;
+  transition: width 0.3s ease;
 }
 
 .counter {
   font-size: 24rpx;
-  color: #9A9A9A;
-  min-width: 64rpx;
+  color: var(--sk-muted, #9A9A9A);
+  min-width: 68rpx;
   text-align: right;
+  font-weight: 600;
 }
 
-.state {
-  padding: 160rpx 60rpx;
-  text-align: center;
-  color: #8A8A8A;
-  font-size: 26rpx;
-}
-
-.state-emoji {
-  font-size: 64rpx;
-  margin-bottom: 20rpx;
-}
-
-.state-text {
-  margin-bottom: 28rpx;
-  line-height: 1.6;
-}
-
-.retry-btn {
-  display: inline-block;
-  padding: 16rpx 48rpx;
+/* 顶部连击胶囊：连击 ≥2 才出现 */
+.combo-pill {
+  display: flex;
+  align-items: center;
+  height: 46rpx;
+  padding: 0 16rpx;
   border-radius: 999rpx;
-  background: #58CC02;
-  color: #FFFFFF;
-  font-size: 26rpx;
+  background: #FFF4E5;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+  animation: pillIn 0.26s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.content {
-  padding: 20rpx 40rpx 40rpx;
+@keyframes pillIn {
+  0% { opacity: 0; transform: scale(0.7); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
-.qtype {
-  display: inline-block;
+.cp-fire {
   font-size: 22rpx;
-  color: #58A000;
-  background: #F0FAE6;
-  padding: 6rpx 18rpx;
+  margin-right: 4rpx;
+}
+
+.cp-x {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #FF9600;
+}
+
+/* 胶囊也跟着档位变色，和浮层保持同一套视觉语言 */
+.combo-pill.tier-1 { background: #F1FBE7; }
+.combo-pill.tier-1 .cp-x { color: #58CC02; }
+
+.combo-pill.tier-2 { background: #FFF4E5; }
+.combo-pill.tier-3 { background: #FFEDE0; }
+.combo-pill.tier-3 .cp-x { color: #FF5C00; }
+
+.combo-pill.tier-4 { background: #F7EDFF; }
+.combo-pill.tier-4 .cp-x { color: #A855F7; }
+
+.back-link {
+  margin-top: 28rpx;
+  font-size: 26rpx;
+  color: var(--sk-muted, #9A9A9A);
+  text-decoration: underline;
+}
+
+/* ===== 题干 ===== */
+.content {
+  padding: 16rpx 40rpx 40rpx;
+}
+
+.qhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chip {
+  font-size: 22rpx;
+  color: var(--sk-primary, #58A000);
+  background: var(--sk-primary-soft, #F0FAE6);
+  padding: 8rpx 20rpx;
   border-radius: 999rpx;
+  font-weight: 700;
+}
+
+.qpos {
+  font-size: 22rpx;
+  color: var(--sk-muted, #B0B0B0);
+}
+
+.qhead-right {
+  display: flex;
+  align-items: center;
+}
+
+/* 音效开关 */
+.sound {
+  width: 54rpx;
+  height: 54rpx;
+  margin-left: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  border-radius: 50%;
+  background: var(--sk-track, #F6F6F6);
+  flex-shrink: 0;
+}
+
+.sound.off {
+  background: #FAFAFA;
+  opacity: 0.55;
+}
+
+.sound-hover {
+  background: #ECECEC;
 }
 
 .stem {
-  font-size: 38rpx;
-  font-weight: 700;
+  font-size: 40rpx;
+  font-weight: 800;
   line-height: 1.6;
-  margin-top: 24rpx;
-  margin-bottom: 40rpx;
+  margin-top: 26rpx;
+  margin-bottom: 44rpx;
+  color: var(--sk-text, #2F2F2F);
 }
 
+/* ===== 选项 ===== */
 .option {
   display: flex;
   align-items: center;
   padding: 26rpx 24rpx;
   margin-bottom: 20rpx;
-  border: 3rpx solid #E8E8E8;
-  border-radius: 22rpx;
-  background: #FFFFFF;
+  border: 3rpx solid var(--sk-line, #E8E8E8);
+  border-radius: 24rpx;
+  background: var(--sk-card, #FFFFFF);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.option-hover {
+  background: var(--sk-track, #F7F7F7);
 }
 
 .option.selected {
-  border-color: #58CC02;
-  background: #F7FDF1;
+  border-color: var(--sk-primary, #58CC02);
+  background: var(--sk-primary-soft, #F7FDF1);
+}
+
+.option.locked {
+  cursor: default;
 }
 
 .option.correct {
-  border-color: #58CC02;
-  background: #F1FBE7;
+  border-color: var(--sk-primary, #58CC02);
+  background: var(--sk-primary-soft, #F1FBE7);
 }
 
 .option.wrong {
-  border-color: #FF6B6B;
+  border-color: #FF4B4B;
   background: #FFF5F5;
 }
 
 .letter {
-  width: 56rpx;
-  height: 56rpx;
+  width: 58rpx;
+  height: 58rpx;
   border-radius: 50%;
-  border: 2rpx solid #E0E0E0;
-  color: #9A9A9A;
+  border: 3rpx solid var(--sk-line, #E0E0E0);
+  color: var(--sk-muted, #9A9A9A);
   font-size: 26rpx;
-  font-weight: 700;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,14 +212,14 @@ page {
 
 .option.selected .letter,
 .option.correct .letter {
-  border-color: #58CC02;
-  background: #58CC02;
-  color: #FFFFFF;
+  border-color: var(--sk-primary, #58CC02);
+  background: var(--sk-primary, #58CC02);
+  color: var(--sk-on-primary, #FFFFFF);
 }
 
 .option.wrong .letter {
-  border-color: #FF6B6B;
-  background: #FF6B6B;
+  border-color: #FF4B4B;
+  background: #FF4B4B;
   color: #FFFFFF;
 }
 
@@ -150,48 +230,145 @@ page {
   word-break: break-all;
 }
 
-.feedback {
-  margin-top: 32rpx;
-  border-radius: 24rpx;
-  padding: 28rpx;
+.option.correct .option-text {
+  color: var(--sk-primary, #3E8E00);
+  font-weight: 600;
 }
 
-.feedback.ok {
-  background: #F1FBE7;
-  border: 2rpx solid #CFF0B0;
-}
-
-.feedback.bad {
-  background: #FFF5F5;
-  border: 2rpx solid #FFD2D2;
-}
-
-.fb-title {
-  font-size: 30rpx;
-  font-weight: 700;
-  margin-bottom: 12rpx;
-}
-
-.feedback.ok .fb-title {
-  color: #3E8E00;
-}
-
-.feedback.bad .fb-title {
+.option.wrong .option-text {
   color: #D93636;
 }
 
-.fb-line {
-  font-size: 26rpx;
-  color: #5B5B5B;
+.mark {
+  width: 40rpx;
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 800;
+  flex-shrink: 0;
+  margin-left: 12rpx;
 }
 
-.fb-exp {
-  font-size: 24rpx;
-  color: #7A7A7A;
-  line-height: 1.7;
-  margin-top: 14rpx;
+.option.correct .mark {
+  color: var(--sk-primary, #58CC02);
 }
 
+.option.wrong .mark {
+  color: #FF4B4B;
+}
+
+/* ===== 连击爆发浮层 =====
+   判定后选项已锁定、不可再点，所以浮层压在选项上不会挡操作；
+   但保险起见仍然 pointer-events: none，让点击穿透。 */
+.combo-burst {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 40%;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 80;
+}
+
+.cb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 340rpx;
+  padding: 22rpx 40rpx 24rpx;
+  border-radius: 36rpx;
+  color: #FFFFFF;
+  background: var(--sk-primary, #58CC02);
+  box-shadow: 0 18rpx 44rpx rgba(0, 0, 0, 0.2);
+  animation-duration: 1.3s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+/* 四档配色：绿 → 橙 → 深橙 → 紫，越往后越"贵" */
+.cb.tier-1 { background: linear-gradient(135deg, #6FDD1E, #4FB800); }
+.cb.tier-2 { background: linear-gradient(135deg, #FFB020, #FF8A00); }
+.cb.tier-3 { background: linear-gradient(135deg, #FF8A3D, #FF5C00); }
+.cb.tier-4 { background: linear-gradient(135deg, #D08CFF, #A855F7); }
+
+/* 里程碑（3/5/8/10…）额外一圈呼吸光，和普通连击区分开 */
+.cb.milestone {
+  box-shadow: 0 18rpx 44rpx rgba(0, 0, 0, 0.2), 0 0 0 6rpx rgba(255, 255, 255, 0.55);
+}
+
+.cb-top {
+  display: flex;
+  align-items: baseline;
+}
+
+.cb-emoji {
+  font-size: 34rpx;
+  margin-right: 8rpx;
+}
+
+.cb-num {
+  font-size: 68rpx;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -2rpx;
+  text-shadow: 0 3rpx 0 rgba(0, 0, 0, 0.12);
+}
+
+.cb-label {
+  font-size: 28rpx;
+  font-weight: 800;
+  margin-left: 8rpx;
+  opacity: 0.95;
+}
+
+/* 档位标签：连击浮层的主文案 */
+.cb-tag {
+  margin-top: 10rpx;
+  font-size: 34rpx;
+  font-weight: 900;
+  letter-spacing: 1rpx;
+}
+
+/* 副文案：一句带梗的解释，让文案不只是标签 */
+.cb-tip {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* 下一档提示：给一个"再打几连"的短线目标 */
+.cb-next {
+  margin-top: 12rpx;
+  padding: 4rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+/* 两个内容相同的动画交替使用：同一元素上换 animation-name 才会重播 */
+.pop-a { animation-name: comboPopA; }
+.pop-b { animation-name: comboPopB; }
+
+@keyframes comboPopA {
+  0% { opacity: 0; transform: scale(0.62) translateY(26rpx); }
+  18% { opacity: 1; transform: scale(1.08) translateY(0); }
+  30% { transform: scale(1); }
+  78% { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(0.96) translateY(-30rpx); }
+}
+
+@keyframes comboPopB {
+  0% { opacity: 0; transform: scale(0.62) translateY(26rpx); }
+  18% { opacity: 1; transform: scale(1.08) translateY(0); }
+  30% { transform: scale(1); }
+  78% { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(0.96) translateY(-30rpx); }
+}
+
+/* ===== 底部固定区 ===== */
 .footer {
   position: fixed;
   left: 0;
@@ -199,27 +376,158 @@ page {
   bottom: 0;
   padding: 24rpx 40rpx;
   padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
-  background: #FFFFFF;
-  border-top: 1rpx solid #F2F2F2;
+  background: var(--sk-card, #FFFFFF);
+  border-top: 3rpx solid #F2F2F2;
+}
+
+.footer.ok {
+  background: var(--sk-primary-soft, #F1FBE7);
+  border-top-color: #CFF0B0;
+}
+
+.footer.bad {
+  background: #FFF5F5;
+  border-top-color: #FFD2D2;
+}
+
+.fb {
+  animation: fbIn 0.22s ease;
+  margin-bottom: 20rpx;
+}
+
+@keyframes fbIn {
+  0% { opacity: 0; transform: translateY(20rpx); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.fb-head {
+  display: flex;
+  align-items: center;
+}
+
+.fb-icon {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 14rpx;
+  flex-shrink: 0;
+}
+
+.footer.ok .fb-icon {
+  background: #58CC02;
+}
+
+.footer.bad .fb-icon {
+  background: #FF4B4B;
+}
+
+.fb-title {
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+/* 答对时在反馈条右上角重复一次连击，和浮层形成呼应 */
+.fb-combo {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  max-width: 380rpx;
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #FF9600;
+  background: #FFF4E5;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  flex-shrink: 0;
+  overflow: hidden;
+  animation: pillIn 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fc-x {
+  flex-shrink: 0;
+}
+
+/* 反馈条里的专属文案：截断保护，长句不会把标题挤掉 */
+.fc-tag {
+  margin-left: 10rpx;
+  padding-left: 10rpx;
+  border-left: 2rpx solid rgba(255, 150, 0, 0.35);
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #C97A00;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer.ok .fb-title {
+  color: var(--sk-primary, #3E8E00);
+}
+
+.footer.bad .fb-title {
+  color: #D93636;
+}
+
+.fb-line {
+  font-size: 26rpx;
+  color: var(--sk-sub, #5B5B5B);
+  margin-top: 10rpx;
+}
+
+.fb-line.break {
+  color: #FF9600;
+  font-weight: 700;
+}
+
+/* 距下一档的提示：弱化处理，不抢判分结果 */
+.fb-line.hint {
+  font-size: 22rpx;
+  color: var(--sk-muted, #8A8A8A);
+}
+
+.fb-exp {
+  font-size: 24rpx;
+  color: var(--sk-muted, #7A7A7A);
+  line-height: 1.7;
+  margin-top: 8rpx;
+  max-height: 132rpx;
+  overflow: hidden;
+}
+
+.fb.idle {
+  font-size: 26rpx;
+  color: var(--sk-muted, #B0B0B0);
+  text-align: center;
+  padding: 12rpx 0 20rpx;
 }
 
 .btn {
-  height: 92rpx;
-  line-height: 92rpx;
+  height: 96rpx;
+  line-height: 96rpx;
   text-align: center;
   border-radius: 999rpx;
-  background: #58CC02;
-  color: #FFFFFF;
+  background: var(--sk-primary, #58CC02);
+  color: var(--sk-on-primary, #FFFFFF);
   font-size: 32rpx;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 2rpx;
+  box-shadow: 0 8rpx 0 var(--sk-primary-dark, #46A302);
 }
 
 .btn-hover {
-  background: #4CB300;
+  background: var(--sk-primary-dark, #4CB300);
+  transform: translateY(4rpx);
+  box-shadow: 0 4rpx 0 #46A302;
 }
 
 .btn.disabled {
-  background: #E8E8E8;
-  color: #B5B5B5;
+  background: var(--sk-track, #E8E8E8);
+  color: var(--sk-muted, #B5B5B5);
+  box-shadow: none;
 }

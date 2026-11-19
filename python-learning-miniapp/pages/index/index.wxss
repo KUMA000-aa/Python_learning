@@ -1,172 +1,447 @@
 .page {
-  padding: 32rpx 32rpx 80rpx;
+  /* 底部留出 tabbar 高度（约 140rpx）+ 安全区 */
+  padding: 32rpx 32rpx calc(150rpx + env(safe-area-inset-bottom));
 }
 
+/* ============================================================
+   顶部进度卡
+   ============================================================ */
 .hero {
-  background: linear-gradient(135deg, #58CC02 0%, #37A000 100%);
+  background: linear-gradient(135deg, var(--sk-hero-from, #58CC02) 0%, var(--sk-hero-to, #37A000) 100%);
   border-radius: 36rpx;
-  padding: 44rpx 40rpx 36rpx;
-  color: #FFFFFF;
-  box-shadow: 0 16rpx 36rpx rgba(88, 204, 2, 0.22);
+  padding: 40rpx 40rpx 32rpx;
+  color: var(--sk-hero-text, #FFFFFF);
+  border: 2rpx solid var(--sk-hero-border, rgba(255, 255, 255, 0.22));
+  box-shadow: 0 16rpx 36rpx var(--sk-glow, rgba(88, 204, 2, 0.22));
+}
+
+.hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
 .hero-title {
-  font-size: 44rpx;
-  font-weight: 700;
+  font-size: 42rpx;
+  font-weight: 800;
   letter-spacing: 1rpx;
+}
+
+.hero-pct {
+  font-size: 52rpx;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.pct-unit {
+  font-size: 24rpx;
+  font-weight: 600;
+  opacity: 0.85;
+  margin-left: 2rpx;
 }
 
 .hero-sub {
   font-size: 24rpx;
-  opacity: 0.85;
-  margin-top: 12rpx;
+  opacity: 0.88;
+  margin-top: 10rpx;
 }
 
 .bar {
-  height: 16rpx;
-  background: rgba(255, 255, 255, 0.3);
+  height: 18rpx;
+  background: rgba(255, 255, 255, 0.28);
   border-radius: 10rpx;
   overflow: hidden;
-  margin-top: 32rpx;
+  margin-top: 28rpx;
 }
 
 .bar-fill {
   height: 100%;
-  background: #FFFFFF;
+  background: var(--sk-hero-text, #FFFFFF);
   border-radius: 10rpx;
-  transition: width 0.3s ease;
+  transition: width 0.4s ease;
 }
 
-.hero-meta {
-  font-size: 22rpx;
-  opacity: 0.9;
-  margin-top: 14rpx;
+.hero-stats {
+  display: flex;
+  margin-top: 26rpx;
+  padding-top: 22rpx;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.22);
 }
 
-.state {
-  padding: 120rpx 40rpx;
+.hstat {
+  flex: 1;
   text-align: center;
-  color: #8A8A8A;
-  font-size: 26rpx;
+  min-width: 0;
 }
 
-.state-emoji {
-  font-size: 64rpx;
-  margin-bottom: 20rpx;
+.hstat-num {
+  font-size: 32rpx;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
-.state-text {
-  margin-bottom: 28rpx;
-  line-height: 1.6;
+.hstat-dim {
+  font-size: 20rpx;
+  font-weight: 600;
+  opacity: 0.75;
 }
 
-.retry-btn {
-  display: inline-block;
-  padding: 16rpx 48rpx;
-  border-radius: 999rpx;
-  background: #58CC02;
-  color: #FFFFFF;
-  font-size: 26rpx;
+.hstat-label {
+  font-size: 20rpx;
+  opacity: 0.8;
+  margin-top: 6rpx;
 }
 
-.tip {
-  margin-top: 24rpx;
-  font-size: 22rpx;
-  color: #B0B0B0;
-}
-
-.courses {
-  margin-top: 32rpx;
-}
-
-.course {
-  background: #FFFFFF;
+/* ============================================================
+   继续学习
+   ============================================================ */
+.continue {
+  display: flex;
+  align-items: center;
+  margin-top: 28rpx;
+  padding: 28rpx 32rpx;
   border-radius: 32rpx;
-  padding: 32rpx;
-  margin-bottom: 28rpx;
+  background: var(--sk-card, #FFFFFF);
+  border: 3rpx solid var(--sk-border, #DCEFC8);
+  box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.04);
+}
+
+.continue-hover {
+  background: var(--sk-primary-soft, #F7FDF1);
+}
+
+.continue-icon {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: var(--sk-primary, #58CC02);
+  color: var(--sk-on-primary, #FFFFFF);
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.continue-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.continue-title {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.continue-sub {
+  font-size: 24rpx;
+  color: var(--sk-muted, #9A9A9A);
+  margin-top: 6rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.continue-cta {
+  padding: 14rpx 36rpx;
+  border-radius: 999rpx;
+  background: var(--sk-primary, #58CC02);
+  color: var(--sk-on-primary, #FFFFFF);
+  font-size: 26rpx;
+  font-weight: 700;
+  box-shadow: 0 5rpx 0 var(--sk-primary-dark, #46A302);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   课程 / 单元
+   ============================================================ */
+.course {
+  background: var(--sk-card, #FFFFFF);
+  border-radius: 32rpx;
+  padding: 32rpx 28rpx 36rpx;
+  margin-top: 28rpx;
   box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.04);
 }
 
 .course-title {
   font-size: 34rpx;
-  font-weight: 700;
+  font-weight: 800;
+  padding: 0 8rpx;
 }
 
 .course-desc {
   font-size: 24rpx;
-  color: #9A9A9A;
+  color: var(--sk-muted, #9A9A9A);
   margin-top: 8rpx;
+  padding: 0 8rpx;
 }
 
 .unit {
-  margin-top: 28rpx;
+  margin-top: 32rpx;
 }
 
-.unit-title {
-  font-size: 26rpx;
-  color: #6E6E6E;
-  font-weight: 600;
-  margin-bottom: 16rpx;
-}
-
-.level {
+.unit-head {
   display: flex;
   align-items: center;
-  padding: 22rpx 24rpx;
-  margin-bottom: 16rpx;
-  border: 2rpx solid #EDEDED;
-  border-radius: 24rpx;
-  background: #FAFAFA;
-}
-
-.level-hover {
-  background: #F2F2F2;
-}
-
-.level.done {
-  border-color: #CFF0B0;
-  background: #F4FCEB;
-}
-
-.level-badge {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 50%;
-  background: #E9E9E9;
-  color: #9C9C9C;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28rpx;
-  font-weight: 700;
-  margin-right: 22rpx;
-}
-
-.level.done .level-badge {
-  background: #58CC02;
+  justify-content: space-between;
+  padding: 20rpx 28rpx;
+  border-radius: 24rpx 24rpx 0 0;
   color: #FFFFFF;
 }
 
-.level-info {
-  flex: 1;
-}
-
-.level-title {
+.unit-title {
   font-size: 28rpx;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.level-meta {
+.unit-meta {
   font-size: 22rpx;
-  color: #9A9A9A;
+  opacity: 0.9;
+}
+
+.unit-bar {
+  height: 12rpx;
+  background: var(--sk-track, #F0F0F0);
+  border-radius: 0 0 10rpx 10rpx;
+  overflow: hidden;
+}
+
+.unit-bar-fill {
+  height: 100%;
+  border-radius: 10rpx;
+  transition: width 0.4s ease;
+}
+
+/* ============================================================
+   关卡蛇形路径
+   ============================================================ */
+.path {
+  display: flex;
+  flex-direction: column;
+  padding: 44rpx 8rpx 8rpx;
+}
+
+.node-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 230rpx;
+  margin-bottom: 40rpx;
+}
+
+.start-bubble {
+  padding: 6rpx 22rpx;
+  border-radius: 999rpx;
+  background: #FFC800;
+  color: #7A5B00;
+  font-size: 22rpx;
+  font-weight: 800;
+  margin-bottom: 10rpx;
+  animation: floatY 1.8s ease-in-out infinite;
+}
+
+.node {
+  width: 152rpx;
+  height: 152rpx;
+  border-radius: 50%;
+  border: 6rpx solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46rpx;
+  font-weight: 800;
+  color: var(--sk-on-primary, #FFFFFF);
+  background: var(--sk-track, #E5E5E5);
+  box-shadow: 0 10rpx 0 var(--sk-border, #D2D2D2);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.node-hover {
+  transform: translateY(4rpx);
+  box-shadow: 0 6rpx 0 rgba(0, 0, 0, 0.12);
+}
+
+/* 已通关：单元主题色实心 */
+.node.done {
+  background: #58CC02;
+  box-shadow: 0 10rpx 0 #46A302;
+  font-size: 56rpx;
+}
+
+/* 进行中：白底 + 主题色描边 */
+.node.doing {
+  background: var(--sk-card, #FFFFFF);
+  border-color: var(--sk-primary, #58CC02);
+  color: var(--sk-primary, #46A302);
+  box-shadow: 0 10rpx 0 var(--sk-primary-soft, #DCEFC8);
+}
+
+/* 未开始：灰色 */
+.node.todo {
+  background: var(--sk-track, #EFEFEF);
+  color: var(--sk-muted, #B4B4B4);
+  box-shadow: 0 10rpx 0 var(--sk-line, #E2E2E2);
+}
+
+/* 推荐关卡：轻微呼吸 */
+.node.next {
+  animation: nodePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes nodePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+/* 单元主题色：已通关 / 进行中两态各 5 套 */
+.c0 .node.done { background: #58CC02; box-shadow: 0 10rpx 0 #46A302; }
+.c1 .node.done { background: #1CB0F6; box-shadow: 0 10rpx 0 #1899D6; }
+.c2 .node.done { background: #CE82FF; box-shadow: 0 10rpx 0 #A855F7; }
+.c3 .node.done { background: #FF9600; box-shadow: 0 10rpx 0 #E08600; }
+.c4 .node.done { background: #FF4B4B; box-shadow: 0 10rpx 0 #E03A3A; }
+
+.c0 .node.doing { border-color: #58CC02; color: #46A302; box-shadow: 0 10rpx 0 #DCEFC8; }
+.c1 .node.doing { border-color: #1CB0F6; color: #1899D6; box-shadow: 0 10rpx 0 #D6EFFB; }
+.c2 .node.doing { border-color: #CE82FF; color: #A855F7; box-shadow: 0 10rpx 0 #F0E0FF; }
+.c3 .node.doing { border-color: #FF9600; color: #E08600; box-shadow: 0 10rpx 0 #FFE8CC; }
+.c4 .node.doing { border-color: #FF4B4B; color: #E03A3A; box-shadow: 0 10rpx 0 #FFDCDC; }
+
+.node-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--sk-sub, #5B5B5B);
+  text-align: center;
+  margin-top: 18rpx;
+  line-height: 1.4;
+  max-width: 220rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.node-meta {
+  font-size: 20rpx;
   margin-top: 6rpx;
+  text-align: center;
 }
 
-.level.done .level-meta {
+/* ============================================================
+   关卡星级（三颗星，点亮数量 = 历史最佳）
+   ============================================================ */
+.stars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14rpx;
+}
+
+.star {
+  font-size: 30rpx;
+  line-height: 1;
+  color: var(--sk-line, #E4E4E4);
+  margin: 0 3rpx;
+  transition: color 0.2s ease;
+}
+
+/* 点亮的星星：金色 + 一点立体感 */
+.star.on {
+  color: #FFC800;
+  text-shadow: 0 2rpx 0 #E3A400;
+}
+
+/* 未开始的关卡用更淡的灰，避免地图太花 */
+.stars.todo .star {
+  color: var(--sk-line, #EEEEEE);
+}
+
+.node-meta.done {
   color: #58A000;
+  font-weight: 700;
 }
 
-.level-arrow {
-  font-size: 36rpx;
-  color: #C4C4C4;
+.node-meta.doing {
+  color: #FF9600;
+}
+
+.node-meta.todo {
+  color: var(--sk-muted, #B8B8B8);
+}
+
+.all-done {
+  margin-top: 32rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--sk-muted, #9A9A9A);
+}
+
+/* ===== 等级条 ===== */
+.lv-strip {
+  display: flex;
+  align-items: center;
+  margin-top: 22rpx;
+  padding-top: 18rpx;
+  border-top: 1rpx dashed var(--sk-hero-border, rgba(0, 0, 0, 0.07));
+}
+
+.lv-badge {
+  display: flex;
+  align-items: center;
+  height: 38rpx;
+  padding: 0 14rpx;
+  border-radius: 999rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.8);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 900;
+  flex-shrink: 0;
+  box-shadow: 0 3rpx 8rpx rgba(0, 0, 0, 0.16);
+}
+
+.lv-emoji {
+  font-size: 18rpx;
+  margin-right: 4rpx;
+}
+
+.lv-tier {
+  margin-left: 10rpx;
+  font-size: 19rpx;
+  font-weight: 800;
+  letter-spacing: 0.5rpx;
+  color: #FFFFFF;
+  flex-shrink: 0;
+  opacity: 0.95;
+}
+
+.lv-bar {
+  flex: 1;
+  height: 12rpx;
+  margin: 0 12rpx;
+  border-radius: 6rpx;
+  background: rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+}
+
+.lv-fill {
+  height: 100%;
+  border-radius: 6rpx;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lv-text {
+  font-size: 19rpx;
+  color: rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
+}
+
+/* ===== 深色皮肤：浅灰字在深底上太淡，整体提亮一档 ===== */
+.sk-dark .node.todo {
+  color: var(--sk-sub, #B4B4B4);
+}
+
+.sk-dark .node-meta.todo,
+.sk-dark .all-done {
+  color: var(--sk-sub, #B8B8B8);
 }

@@ -1,0 +1,182 @@
+<view class="page sk-root {{skinClass}}" style="{{skinStyle}}">
+  <!-- ===== 头部：头像（带头像框）+ 昵称 + 等级经验 ===== -->
+  <view class="hero">
+    <view class="av-box">
+      <view class="av-ring" style="border-color: {{frameAccent}}"></view>
+      <view class="avatar">{{avatar}}</view>
+      <view class="av-lv" style="background: {{frameAccent}}">Lv{{level}}</view>
+      <view class="av-frame-emoji" wx:if="{{frameEmoji}}">{{frameEmoji}}</view>
+    </view>
+
+    <view class="hero-main">
+      <view class="name">{{displayName}}</view>
+
+      <view class="hero-tags">
+        <text class="tag-title" style="background: {{tierLight}}; color: {{tierColor}}">Lv{{level}} · {{tierName}} {{tierRoman}}</text>
+        <text class="tag-frame" wx:if="{{frameName}}">{{frameName}}</text>
+        <text class="tag-skin" wx:if="{{skinName}}">{{skinEmoji}} {{skinName}}</text>
+      </view>
+
+      <view class="exp-line">
+        <view class="exp-bar">
+          <view class="exp-fill" style="width: {{expPercent}}%; background: {{tierColor}}"></view>
+        </view>
+        <text class="exp-num">{{expInLevel}}/{{expNeed}}</text>
+      </view>
+
+      <view class="exp-hint">
+        <block wx:if="{{isMaxLevel}}">已达最高等级 Lv{{maxLevel}}「最强王者」</block>
+        <block wx:elif="{{expToNext > 0}}">距 Lv{{level + 1}}「{{nextLevelTitle}}」还差 {{expToNext}} EXP</block>
+        <block wx:else>本级经验已满，再答对一题就升级</block>
+      </view>
+
+      <!-- 段位进度：告诉用户离「晋级」还有几步，比只看经验条更有目标感 -->
+      <view class="tier-hint" wx:if="{{!isMaxLevel && nextTierName}}">
+        <text class="tier-name" style="color: {{tierColor}}">{{tierName}}</text>
+        <text class="tier-text" wx:if="{{tierLevelsLeft > 0}}">再升 {{tierLevelsLeft}} 级晋级「{{nextTierName}}」</text>
+        <text class="tier-text" wx:else>下一级就晋级「{{nextTierName}}」</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 头像框收藏 ===== -->
+  <view class="frames-card" wx:if="{{frames.length}}">
+    <view class="fc-head">
+      <view class="fc-title">头像框</view>
+      <view class="fc-sub">{{unlockedFrames}}/{{frames.length}} 已解锁 · 累计 {{exp}} EXP</view>
+    </view>
+    <view class="frame-grid">
+      <view
+        class="frame-item {{item.unlocked ? '' : 'locked'}} {{item.equipped ? 'on' : ''}}"
+        wx:for="{{frames}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onPickFrame"
+        hover-class="frame-hover"
+      >
+        <view class="fi-ring" style="border-color: {{item.unlocked ? item.accent : '#DDE1E6'}}">
+          <text class="fi-emoji">{{item.emoji}}</text>
+          <text class="fi-lock" wx:if="{{!item.unlocked}}">🔒</text>
+        </view>
+        <view class="fi-name">{{item.name}}</view>
+        <view class="fi-state {{item.equipped ? 'using' : ''}}">
+          <block wx:if="{{item.equipped}}">使用中</block>
+          <block wx:elif="{{item.unlocked}}">点击佩戴</block>
+          <block wx:else>Lv{{item.min_level}} 解锁</block>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 皮肤：当前配色 + 色板缩略 + 进图鉴 ===== -->
+  <view class="skin-card" bindtap="onGoSkins" hover-class="skin-hover" wx:if="{{skins.length}}">
+    <view class="sc-head">
+      <view class="sc-title">皮肤</view>
+      <view class="sc-sub">{{skinName}} · {{unlockedSkins}}/{{skins.length}} 已解锁</view>
+    </view>
+    <view class="sc-row">
+      <view
+        class="sc-item {{item.id === skinId ? 'on' : ''}} {{item.unlocked ? '' : 'locked'}}"
+        wx:for="{{skins}}"
+        wx:key="id"
+      >
+        <view
+          class="sc-dot"
+          style="background: linear-gradient(135deg, {{item.tokens.hero_from}} 0%, {{item.tokens.hero_to}} 100%)"
+        >
+          <text class="sc-lock" wx:if="{{!item.unlocked}}">🔒</text>
+        </view>
+        <text class="sc-name">{{item.name}}</text>
+      </view>
+    </view>
+    <view class="sc-more">
+      <text>去皮肤图鉴挑一套</text>
+      <text class="sc-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- ===== 加载 ===== -->
+  <view wx:if="{{loading}}" class="sk-wrap">
+    <view class="sk sk-card short"></view>
+    <view class="sk sk-card"></view>
+    <view class="sk-tip">加载中…</view>
+  </view>
+
+  <!-- ===== 出错 ===== -->
+  <view wx:elif="{{error}}" class="state">
+    <view class="state-emoji">🔌</view>
+    <view class="state-text">{{error}}</view>
+    <view class="state-hint">请确认后端已启动（端口 8001）</view>
+    <view class="retry-btn" hover-class="retry-hover" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <block wx:else>
+    <!-- ===== 通关进度 ===== -->
+    <view class="progress-card">
+      <view class="pc-top">
+        <view class="pc-label">闯关进度</view>
+        <view class="pc-num">{{completedLevels}}<text class="pc-dim">/{{totalLevels}}</text></view>
+      </view>
+      <view class="pc-bar">
+        <view class="pc-bar-fill" style="width: {{percent}}%"></view>
+      </view>
+      <view class="pc-foot">{{percent}}% 的关卡已通关</view>
+    </view>
+
+    <!-- ===== 数据网格 ===== -->
+    <view class="grid">
+      <view class="cell {{item.accent ? 'accent' : ''}} {{item.gold ? 'gold' : ''}}" wx:for="{{statItems}}" wx:key="label">
+        <view class="cell-value">{{item.value}}</view>
+        <view class="cell-label">{{item.label}}</view>
+      </view>
+    </view>
+
+    <!-- ===== 错题入口 ===== -->
+    <view class="entry {{wrongCount > 0 ? 'warn' : ''}}" bindtap="onGoReview" hover-class="entry-hover">
+      <view class="entry-icon">{{wrongCount > 0 ? '📝' : '🎉'}}</view>
+      <view class="entry-main">
+        <view class="entry-title">
+          {{wrongCount > 0 ? wrongCount + ' 道错题待订正' : '错题本已清空'}}
+        </view>
+        <view class="entry-sub">
+          {{wrongCount > 0 ? '点进去可以原地重做，答对后自动移出' : '保持下去，可以回去复习任意一关'}}
+        </view>
+      </view>
+      <view class="entry-arrow">›</view>
+    </view>
+
+    <!-- ===== 快捷入口 ===== -->
+    <view class="entry" bindtap="onGoStudy" hover-class="entry-hover">
+      <view class="entry-icon">📚</view>
+      <view class="entry-main">
+        <view class="entry-title">继续闯关</view>
+        <view class="entry-sub">回到关卡地图，挑下一关</view>
+      </view>
+      <view class="entry-arrow">›</view>
+    </view>
+
+    <!-- ===== 关于 ===== -->
+    <view class="about">
+      <view class="about-title">关于</view>
+      <view class="row">
+        <view class="row-k">后端地址</view>
+        <view class="row-v">{{apiBase}}</view>
+      </view>
+      <view class="row">
+        <view class="row-k">用户 ID</view>
+        <view class="row-v">{{userId || '—'}}</view>
+      </view>
+      <view class="row">
+        <view class="row-k">版本</view>
+        <view class="row-v">1.0.0</view>
+      </view>
+      <view class="row row-tap" bindtap="onRelogin" hover-class="row-hover">
+        <view class="row-k">登录态</view>
+        <view class="row-v link">重新登录 ›</view>
+      </view>
+    </view>
+  </block>
+
+  <view class="tabbar-space"></view>
+  <tabbar id="tabbar" current="profile" />
+</view>

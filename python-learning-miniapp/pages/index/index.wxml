@@ -1,50 +1,143 @@
-<view class="page">
+<view class="page sk-root {{skinClass}}" style="{{skinStyle}}">
+  <!-- ===== 顶部进度卡 ===== -->
   <view class="hero">
-    <view class="hero-title">🐍 Python 学习</view>
-    <view class="hero-sub">每天一小关，离独立写代码更近一步</view>
+    <view class="hero-top">
+      <view class="hero-title">🐍 Python 学习</view>
+      <view class="hero-pct">{{percent}}<text class="pct-unit">%</text></view>
+    </view>
+    <view class="hero-sub">{{heroSub}}</view>
+
     <view class="bar">
       <view class="bar-fill" style="width: {{percent}}%"></view>
     </view>
-    <view class="hero-meta">{{completedCount}} / {{totalCount}} 关已通关</view>
-  </view>
 
-  <view wx:if="{{loading}}" class="state">
-    <view class="state-emoji">⏳</view>
-    <view class="state-text">加载中…</view>
-  </view>
-
-  <view wx:elif="{{error}}" class="state">
-    <view class="state-emoji">😵</view>
-    <view class="state-text">{{error}}</view>
-    <view class="retry-btn" bindtap="onRetry">重新加载</view>
-    <view class="tip">提示：请先在电脑上启动后端服务（端口 8001）</view>
-  </view>
-
-  <view wx:else class="courses">
-    <view class="course" wx:for="{{courses}}" wx:key="id">
-      <view class="course-title">{{item.title}}</view>
-      <view class="course-desc">{{item.description}}</view>
-
-      <view class="unit" wx:for="{{item.units}}" wx:for-item="unit" wx:key="id">
-        <view class="unit-title">{{unit.title}}</view>
-
-        <view
-          class="level {{level.completed ? 'done' : ''}}"
-          wx:for="{{unit.levels}}"
-          wx:for-item="level"
-          wx:key="id"
-          data-id="{{level.id}}"
-          bindtap="onLevelTap"
-          hover-class="level-hover"
-        >
-          <view class="level-badge">{{level.order + 1}}</view>
-          <view class="level-info">
-            <view class="level-title">{{level.title}}</view>
-            <view class="level-meta">{{level.completed ? '已通关 · ' + level.score + ' 分' : '未开始'}}</view>
-          </view>
-          <view class="level-arrow">›</view>
-        </view>
+    <view class="hero-stats">
+      <view class="hstat">
+        <view class="hstat-num">{{completedCount}}<text class="hstat-dim">/{{totalCount}}</text></view>
+        <view class="hstat-label">已通关</view>
+      </view>
+      <view class="hstat">
+        <view class="hstat-num">{{totalStars}}<text class="hstat-dim">/{{maxStars}}</text></view>
+        <view class="hstat-label">星星</view>
+      </view>
+      <view class="hstat">
+        <view class="hstat-num">{{avgScore}}</view>
+        <view class="hstat-label">平均分</view>
+      </view>
+      <view class="hstat">
+        <view class="hstat-num">{{totalAttempts}}</view>
+        <view class="hstat-label">挑战次数</view>
       </view>
     </view>
+
+    <!-- 等级条：经验只来自首次闯关，重复刷同一关不再加经验 -->
+    <view class="lv-strip" wx:if="{{level > 0}}">
+      <view class="lv-badge" style="background: {{tierColor}}">
+        <text class="lv-emoji" wx:if="{{frameEmoji}}">{{frameEmoji}}</text>Lv{{level}}
+      </view>
+      <text class="lv-tier" wx:if="{{tierName}}">{{tierName}} {{tierRoman}}</text>
+      <view class="lv-bar">
+        <view class="lv-fill" style="width: {{expPercent}}%; background: {{frameAccent}}"></view>
+      </view>
+      <view class="lv-text">{{expNeed > 0 ? expInLevel + '/' + expNeed : 'MAX'}}</view>
+    </view>
   </view>
+
+  <!-- ===== 加载骨架屏 ===== -->
+  <view wx:if="{{loading}}" class="sk-wrap">
+    <view class="sk sk-hero"></view>
+    <view class="sk sk-card"></view>
+    <view class="sk sk-card short"></view>
+    <view class="sk-tip">正在加载课程…</view>
+  </view>
+
+  <!-- ===== 错误态 ===== -->
+  <view wx:elif="{{error}}" class="state">
+    <view class="state-emoji">🔌</view>
+    <view class="state-text">{{error}}</view>
+    <view class="state-hint">{{errorHint}}</view>
+    <view class="retry-btn" hover-class="retry-hover" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <block wx:else>
+    <!-- ===== 空态：没有课程数据 ===== -->
+    <view wx:if="{{isEmpty}}" class="state">
+      <view class="state-emoji">📚</view>
+      <view class="state-text">还没有任何关卡</view>
+      <view class="state-hint">在后端目录执行 python -m app.seed 导入演示数据，再下拉刷新</view>
+      <view class="retry-btn" hover-class="retry-hover" bindtap="onRetry">刷新试试</view>
+    </view>
+
+    <block wx:else>
+      <!-- ===== 继续学习 ===== -->
+      <view wx:if="{{nextLevel}}" class="continue" bindtap="onContinue" hover-class="continue-hover">
+        <view class="continue-icon">▶</view>
+        <view class="continue-main">
+          <view class="continue-title">继续学习</view>
+          <view class="continue-sub">{{nextLevel.title}}</view>
+        </view>
+        <view class="continue-cta">开始</view>
+      </view>
+
+      <!-- ===== 课程 → 单元 → 关卡地图 ===== -->
+      <view class="course" wx:for="{{courses}}" wx:key="id">
+        <view class="course-title">{{item.title}}</view>
+        <view class="course-desc" wx:if="{{item.description}}">{{item.description}}</view>
+
+        <view class="unit c{{unit.ci}}" wx:for="{{item.units}}" wx:for-item="unit" wx:key="id">
+          <view class="unit-head" style="background: {{unit.color}}">
+            <view class="unit-title">{{unit.title}}</view>
+            <view class="unit-meta">{{unit.doneCount}}/{{unit.levelCount}} 关</view>
+          </view>
+
+          <view class="unit-bar">
+            <view class="unit-bar-fill" style="width: {{unit.percent}}%; background: {{unit.color}}"></view>
+          </view>
+
+          <view class="path">
+            <view
+              class="node-wrap"
+              wx:for="{{unit.levels}}"
+              wx:for-item="level"
+              wx:key="id"
+              style="align-self: {{level.align}}"
+            >
+              <view wx:if="{{level.isNext}}" class="start-bubble">开始</view>
+
+              <view
+                class="node {{level.state}} {{level.isNext ? 'next' : ''}}"
+                data-id="{{level.id}}"
+                data-title="{{level.title}}"
+                data-next="{{level.nextId}}"
+                bindtap="onLevelTap"
+                hover-class="node-hover"
+              >
+                <block wx:if="{{level.state === 'done'}}">👑</block>
+                <block wx:else>{{level.badge}}</block>
+              </view>
+
+              <view class="node-title">{{level.title}}</view>
+
+              <!-- 星级：三颗星，点亮数量 = 历史最佳星级 -->
+              <view class="stars {{level.state}}">
+                <text class="star {{level.stars >= 1 ? 'on' : ''}}">★</text>
+                <text class="star {{level.stars >= 2 ? 'on' : ''}}">★</text>
+                <text class="star {{level.stars >= 3 ? 'on' : ''}}">★</text>
+              </view>
+
+              <view class="node-meta {{level.state}}">
+                <block wx:if="{{level.state === 'todo'}}">未开始</block>
+                <block wx:else>最佳 {{level.bestScoreText}} 分</block>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{!nextLevel}}" class="all-done">🏅 全部关卡已通关，可以回去复习任意一关</view>
+    </block>
+  </block>
+
+  <!-- 底部导航（自定义组件，三页共用） -->
+  <tabbar id="tabbar" current="index" />
 </view>

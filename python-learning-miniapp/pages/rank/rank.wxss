@@ -1,0 +1,308 @@
+.page {
+  padding: 28rpx 32rpx calc(150rpx + env(safe-area-inset-bottom));
+}
+
+/* 底部固定「我的排名」时多留一段空间，避免盖住最后一行 */
+.page.has-mine {
+  padding-bottom: calc(288rpx + env(safe-area-inset-bottom));
+}
+
+/* ============================================================
+   标题
+   ============================================================ */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 8rpx 0;
+}
+
+.title {
+  font-size: 48rpx;
+  font-weight: 800;
+  letter-spacing: 1rpx;
+  color: var(--sk-text, #2F2F2F);
+}
+
+.sub {
+  font-size: 23rpx;
+  color: var(--sk-muted, #A5A5A5);
+  margin-top: 8rpx;
+}
+
+.head-icon {
+  font-size: 56rpx;
+  line-height: 1;
+  opacity: 0.9;
+}
+
+/* ============================================================
+   榜单切换
+   ============================================================ */
+.seg {
+  display: flex;
+  margin-top: 26rpx;
+  padding: 8rpx;
+  background: var(--sk-card, #FFFFFF);
+  border-radius: 999rpx;
+  box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.045);
+}
+
+.seg-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 0;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: var(--sk-muted, #8A8A8A);
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.seg-hover {
+  opacity: 0.75;
+}
+
+.seg-item.on {
+  background: linear-gradient(135deg, var(--sk-hero-from, #58CC02) 0%, var(--sk-hero-to, #37A000) 100%);
+  color: var(--sk-on-primary, #FFFFFF);
+  box-shadow: 0 6rpx 14rpx var(--sk-glow, rgba(88, 204, 2, 0.28));
+}
+
+.seg-icon {
+  font-size: 24rpx;
+  margin-right: 8rpx;
+}
+
+.tip {
+  font-size: 21rpx;
+  color: var(--sk-muted, #ABABAB);
+  margin: 16rpx 12rpx 0;
+}
+
+/* ============================================================
+   前三名领奖台
+   ============================================================ */
+.podium {
+  display: flex;
+  align-items: flex-end;
+  margin-top: 22rpx;
+  padding: 30rpx 10rpx 24rpx;
+  border-radius: 36rpx;
+  background: linear-gradient(180deg, var(--sk-primary-soft, #FFF9E5) 0%, var(--sk-card, #FFFFFF) 46%);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+}
+
+.p-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.p-medal {
+  font-size: 34rpx;
+  line-height: 1;
+  margin-bottom: 12rpx;
+}
+
+.r1 .p-medal {
+  font-size: 46rpx;
+  margin-bottom: 10rpx;
+}
+
+.p-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  color: #FFFFFF;
+  font-size: 38rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.p-avatar.big {
+  width: 116rpx;
+  height: 116rpx;
+  font-size: 50rpx;
+  box-shadow: 0 0 0 8rpx #FFF3C4;
+}
+
+.p-name {
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: var(--sk-text, #3C3C3C);
+  max-width: 180rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.p-main {
+  margin-top: 6rpx;
+  font-size: 26rpx;
+  font-weight: 800;
+  color: var(--sk-primary, #46A302);
+}
+
+.r1 .p-main {
+  font-size: 32rpx;
+}
+
+.p-base {
+  margin-top: 4rpx;
+  font-size: 19rpx;
+  color: var(--sk-muted, #ABABAB);
+}
+
+/* ============================================================
+   第 4 名往后
+   ============================================================ */
+.list {
+  margin-top: 20rpx;
+  padding: 4rpx 0;
+  background: var(--sk-card, #FFFFFF);
+  border-radius: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.045);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 26rpx;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row.me {
+  background: var(--sk-primary-soft, #F5FDEC);
+  border-radius: 24rpx;
+}
+
+.row-rank {
+  width: 54rpx;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 800;
+  color: var(--sk-muted, #B9B9B9);
+}
+
+.row.me .row-rank {
+  color: var(--sk-primary, #46A302);
+}
+
+.row-avatar {
+  width: 68rpx;
+  height: 68rpx;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+  border-radius: 50%;
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-name {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--sk-text, #333333);
+}
+
+.me-tag {
+  margin-left: 10rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+  background: var(--sk-primary, #58CC02);
+  color: #FFFFFF;
+  font-size: 18rpx;
+  font-weight: 700;
+}
+
+.row-sub {
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  color: var(--sk-muted, #A8A8A8);
+}
+
+.row-value {
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  font-size: 28rpx;
+  font-weight: 800;
+  color: var(--sk-primary, #46A302);
+}
+
+/* ============================================================
+   我的排名（不在前三时固定显示）
+   ============================================================ */
+.mine {
+  position: fixed;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: calc(132rpx + env(safe-area-inset-bottom));
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  padding: 18rpx 24rpx;
+  border-radius: 28rpx;
+  background: var(--sk-card, #FFFFFF);
+  border: 3rpx solid var(--sk-primary-soft, #C9F0A6);
+  box-shadow: 0 10rpx 28rpx var(--sk-glow, rgba(88, 204, 2, 0.16));
+}
+
+.mine-rank {
+  width: 54rpx;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 800;
+  color: var(--sk-primary, #46A302);
+}
+
+/* ============================================================
+   头像配色（按名次循环）
+   ============================================================ */
+.p-avatar.c0,
+.row-avatar.c0 {
+  background: linear-gradient(135deg, #58CC02 0%, #37A000 100%);
+}
+
+.p-avatar.c1,
+.row-avatar.c1 {
+  background: linear-gradient(135deg, #1CB0F6 0%, #0C8FD0 100%);
+}
+
+.p-avatar.c2,
+.row-avatar.c2 {
+  background: linear-gradient(135deg, #CE82FF 0%, #A855F7 100%);
+}
+
+.p-avatar.c3,
+.row-avatar.c3 {
+  background: linear-gradient(135deg, #FF9600 0%, #E08600 100%);
+}
+
+.p-avatar.c4,
+.row-avatar.c4 {
+  background: linear-gradient(135deg, #FF6B6B 0%, #E03A3A 100%);
+}

@@ -1,48 +1,103 @@
-<view class="page">
+<view class="page sk-root {{skinClass}}" style="{{skinStyle}}">
+  <!-- ===== 顶部：退出 / 进度 / 连击 / 题号 ===== -->
   <view class="topbar">
-    <view class="close" bindtap="onExit">✕</view>
+    <view class="close" bindtap="onExit" hover-class="close-hover">✕</view>
     <view class="bar">
       <view class="bar-fill" style="width: {{percent}}%"></view>
+    </view>
+    <view class="combo-pill tier-{{comboTier}}" wx:if="{{combo >= 2}}">
+      <text class="cp-fire">{{comboEmoji}}</text>
+      <text class="cp-x">×{{combo}}</text>
     </view>
     <view class="counter">{{index + 1}}/{{total}}</view>
   </view>
 
+  <!-- ===== 加载 ===== -->
   <view wx:if="{{loading}}" class="state">
     <view class="state-emoji">⏳</view>
     <view class="state-text">题目加载中…</view>
   </view>
 
+  <!-- ===== 出错 ===== -->
   <view wx:elif="{{error}}" class="state">
     <view class="state-emoji">😵</view>
     <view class="state-text">{{error}}</view>
-    <view class="retry-btn" bindtap="onRetry">重新加载</view>
+    <view class="state-hint">若是「本关还没有题目」，请先在后端执行 python -m app.seed</view>
+    <view class="retry-btn" hover-class="retry-hover" bindtap="onRetry">重新加载</view>
+    <view class="back-link" bindtap="onExit">返回首页</view>
   </view>
 
+  <!-- ===== 答题主体 ===== -->
   <view wx:else class="content">
-    <view class="qtype">{{questionType}}</view>
+    <view class="qhead">
+      <view class="chip">{{questionType}}</view>
+      <view class="qhead-right">
+        <view class="qpos">第 {{index + 1}} 题 / 共 {{total}} 题</view>
+        <view
+          class="sound {{soundOn ? '' : 'off'}}"
+          hover-class="sound-hover"
+          bindtap="onToggleSound"
+        >{{soundOn ? '🔊' : '🔇'}}</view>
+      </view>
+    </view>
+
     <view class="stem">{{stem}}</view>
 
     <view class="options">
       <view
-        class="option {{!answered && selectedLetter === item.letter ? 'selected' : ''}}{{answered && item.letter === correctAnswer ? ' correct' : ''}}{{answered && selectedLetter === item.letter && !isCorrect ? ' wrong' : ''}}"
+        class="option {{answered ? 'locked ' : ''}}{{!answered && selectedLetter === item.letter ? 'selected ' : ''}}{{answered && item.letter === correctAnswer ? 'correct ' : ''}}{{answered && item.letter === selectedLetter && !isCorrect ? 'wrong' : ''}}"
         wx:for="{{currentOptions}}"
         wx:key="letter"
         data-letter="{{item.letter}}"
         bindtap="onSelect"
+        hover-class="{{answered ? '' : 'option-hover'}}"
       >
         <view class="letter">{{item.letter}}</view>
         <view class="option-text">{{item.text}}</view>
+        <view class="mark" wx:if="{{answered}}">
+          <block wx:if="{{item.letter === correctAnswer}}">✓</block>
+          <block wx:elif="{{item.letter === selectedLetter}}">✕</block>
+        </view>
       </view>
-    </view>
-
-    <view wx:if="{{answered}}" class="feedback {{isCorrect ? 'ok' : 'bad'}}">
-      <view class="fb-title">{{isCorrect ? '答对了 🎉' : '答错了，看看解析'}}</view>
-      <view class="fb-line">正确答案：{{correctAnswer}}</view>
-      <view class="fb-exp" wx:if="{{explanation}}">{{explanation}}</view>
     </view>
   </view>
 
-  <view class="footer" wx:if="{{!loading && !error}}">
+  <!-- ===== 连击爆发浮层 =====
+       判定后选项已锁定、不再响应点击，所以浮层短暂压过选项不影响操作；
+       pointer-events: none 再兜一层，保证任何情况下都不吃点击。 -->
+  <view class="combo-burst" wx:if="{{comboShow}}">
+    <view class="cb tier-{{comboTier}} {{comboMilestone ? 'milestone' : ''}} pop-{{comboPop}}">
+      <view class="cb-top">
+        <text class="cb-emoji">{{comboEmoji}}</text>
+        <text class="cb-num">×{{combo}}</text>
+        <text class="cb-label">连击</text>
+      </view>
+      <view class="cb-tag">{{comboTag}}</view>
+      <view class="cb-tip">{{comboTip}}</view>
+      <view class="cb-next" wx:if="{{comboToNext > 0}}">再 {{comboToNext}} 连 → {{comboNextName}}</view>
+    </view>
+  </view>
+
+  <!-- ===== 底部固定区：判分反馈 + 操作按钮 ===== -->
+  <view class="footer {{answered ? (isCorrect ? 'ok' : 'bad') : ''}}" wx:if="{{!loading && !error}}">
+    <view wx:if="{{answered}}" class="fb">
+      <view class="fb-head">
+        <view class="fb-icon">{{isCorrect ? '✓' : '✕'}}</view>
+        <view class="fb-title">{{isCorrect ? '答对了！' : '再看看解析'}}</view>
+        <view class="fb-combo" wx:if="{{isCorrect && combo >= 2}}">
+          <text class="fc-x">{{comboEmoji}} ×{{combo}}</text>
+          <text class="fc-tag">{{comboTag}}</text>
+        </view>
+      </view>
+      <view class="fb-line hint" wx:if="{{isCorrect && combo >= 2 && comboToNext > 0}}">
+        再连对 {{comboToNext}} 题，进入「{{comboNextName}}」
+      </view>
+      <view class="fb-line break" wx:if="{{!isCorrect && brokenCombo >= 2}}">{{breakText}}</view>
+      <view class="fb-line" wx:if="{{!isCorrect}}">正确答案：{{correctAnswer}}</view>
+      <view class="fb-exp" wx:if="{{explanation}}">{{explanation}}</view>
+    </view>
+    <view wx:else class="fb idle">选一个选项，立即判分</view>
+
     <view
       class="btn {{answered ? '' : 'disabled'}}"
       hover-class="{{answered ? 'btn-hover' : ''}}"

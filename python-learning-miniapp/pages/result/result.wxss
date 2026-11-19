@@ -1,111 +1,551 @@
 .page {
-  padding: 48rpx 40rpx;
+  padding: 48rpx 40rpx 60rpx;
 }
 
+/* ===== 成绩卡 ===== */
 .card {
-  background: #FFFFFF;
+  background: var(--sk-card, #FFFFFF);
   border-radius: 36rpx;
-  padding: 56rpx 40rpx 44rpx;
+  padding: 52rpx 40rpx 44rpx;
   text-align: center;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10rpx 28rpx rgba(0, 0, 0, 0.06);
+  animation: cardIn 0.28s ease;
+}
+
+@keyframes cardIn {
+  0% { opacity: 0; transform: translateY(30rpx); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.card.pass {
+  background: linear-gradient(180deg, var(--sk-primary-soft, #F1FBE7) 0%, var(--sk-card, #FFFFFF) 46%);
+}
+
+.card.fail {
+  background: linear-gradient(180deg, #FFF3E6 0%, var(--sk-card, #FFFFFF) 46%);
 }
 
 .emoji {
-  font-size: 96rpx;
+  font-size: 104rpx;
   line-height: 1;
+  animation: popIn 0.45s ease;
 }
 
 .title {
-  font-size: 36rpx;
-  font-weight: 700;
-  margin-top: 24rpx;
-}
-
-.score {
-  font-size: 96rpx;
+  font-size: 38rpx;
   font-weight: 800;
-  line-height: 1.1;
   margin-top: 20rpx;
 }
 
+.level-name {
+  font-size: 24rpx;
+  color: var(--sk-muted, #9A9A9A);
+  margin-top: 10rpx;
+}
+
+.score {
+  font-size: 104rpx;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-top: 16rpx;
+}
+
 .card.pass .score {
-  color: #58CC02;
+  color: var(--sk-primary, #58CC02);
 }
 
 .card.fail .score {
-  color: #FF8A00;
+  color: #FF9600;
 }
 
 .score-unit {
   font-size: 30rpx;
   font-weight: 500;
-  color: #9A9A9A;
+  color: var(--sk-muted, #9A9A9A);
   margin-left: 6rpx;
 }
 
+/* 滚动过程用等宽数字，避免位数变化时左右抖动 */
+.score.rolling {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* 滚到终值时来一次放大回弹，像老虎机停住 */
+.score.done {
+  animation: scorePop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scorePop {
+  0% { transform: scale(1); }
+  38% { transform: scale(1.16); }
+  100% { transform: scale(1); }
+}
+
+/* ===== 星级 ===== */
+.stars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 22rpx;
+}
+
+.star {
+  font-size: 84rpx;
+  line-height: 1;
+  margin: 0 12rpx;
+  color: var(--sk-line, #EAEAEA);
+  /* both：延迟期间保持起始状态（隐藏缩小），到点再弹出 */
+  animation: starPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.star.on {
+  color: #FFC800;
+  text-shadow: 0 5rpx 0 #E3A400;
+}
+
+@keyframes starPop {
+  0% { opacity: 0; transform: scale(0.2) rotate(-30deg); }
+  70% { opacity: 1; transform: scale(1.14) rotate(6deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(10rpx); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 下面三行的动画延迟与「分数滚动 + 星级弹出」串成一条时间线：
+   0    - 0.90s  分数从 0 滚到目标分
+   0.95 - 1.27s  三颗星依次弹出（延迟在 result.js 里算）
+   1.15 -       星级文案
+   1.28 -       升星提示
+   1.40 -       最高连击
+   全部用 both，延迟期间保持起始状态，不会先闪出来。 */
+.star-line {
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #6B6B6B;
+  animation: fadeUp 0.32s ease both;
+  animation-delay: 1.15s;
+}
+
+.star-best {
+  color: #B08A00;
+  font-weight: 600;
+  margin-left: 8rpx;
+}
+
+.star-hint {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: var(--sk-muted, #9A9A9A);
+  animation: fadeUp 0.32s ease both;
+  animation-delay: 1.28s;
+}
+
+/* ===== 最高连击 ===== */
+.combo-note {
+  display: inline-flex;
+  align-items: flex-start;
+  margin-top: 28rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 24rpx;
+  background: #FFF4E5;
+  animation: fadeUp 0.32s ease both;
+  animation-delay: 1.4s;
+}
+
+.cn-fire {
+  font-size: 24rpx;
+  margin-right: 8rpx;
+  line-height: 1.3;
+}
+
+.cn-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.cn-line {
+  display: flex;
+  align-items: center;
+}
+
+.cn-text {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #FF9600;
+}
+
+/* 结算评语标题：和连击数字同一行，用竖线隔开 */
+.cn-tag {
+  margin-left: 12rpx;
+  padding-left: 12rpx;
+  border-left: 2rpx solid rgba(255, 150, 0, 0.35);
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #C97A00;
+}
+
+.cn-tip {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #9A7B52;
+}
+
+/* 档位配色：3 连以上逐步加深，和答题页的连击视觉保持一致 */
+.combo-note.tier-3 { background: #FFEDE0; }
+.combo-note.tier-3 .cn-text { color: #FF5C00; }
+.combo-note.tier-3 .cn-tag { color: #C24A00; border-left-color: rgba(255, 92, 0, 0.35); }
+
+.combo-note.tier-4 { background: #F7EDFF; }
+.combo-note.tier-4 .cn-text { color: #A855F7; }
+.combo-note.tier-4 .cn-tag { color: #8038C9; border-left-color: rgba(168, 85, 247, 0.35); }
+.combo-note.tier-4 .cn-tip { color: #8A6BA8; }
+
+/* ===== 统计 ===== */
 .stats {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  margin-top: 44rpx;
-  padding-top: 36rpx;
+  margin-top: 40rpx;
+  padding-top: 32rpx;
   border-top: 1rpx solid #F2F2F2;
+}
+
+.stat {
+  flex: 1;
 }
 
 .stat .num {
   font-size: 40rpx;
-  font-weight: 700;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.num-unit {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--sk-muted, #9A9A9A);
+  margin-left: 2rpx;
+}
+
+.num-dim {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--sk-muted, #B0B0B0);
 }
 
 .stat .label {
   font-size: 22rpx;
-  color: #9A9A9A;
+  color: var(--sk-muted, #9A9A9A);
   margin-top: 8rpx;
 }
 
 .divider {
   width: 1rpx;
   height: 56rpx;
-  background: #EFEFEF;
+  background: var(--sk-track, #EFEFEF);
+}
+
+/* ===== 逐题回顾 ===== */
+.review {
+  margin-top: 36rpx;
+  padding-top: 30rpx;
+  border-top: 1rpx solid #F2F2F2;
+  text-align: left;
+  animation: fadeUp 0.34s ease both;
+  animation-delay: 1.55s;
+}
+
+.review-title {
+  font-size: 24rpx;
+  color: var(--sk-muted, #9A9A9A);
+  font-weight: 700;
+  margin-bottom: 18rpx;
+}
+
+.review-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.rv {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 22rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  margin: 0 14rpx 14rpx 0;
+}
+
+.rv.ok {
+  background: #F1FBE7;
+  color: #3E8E00;
+}
+
+.rv.bad {
+  background: #FFF0F0;
+  color: #D93636;
+}
+
+.rv-no {
+  margin-right: 10rpx;
+}
+
+.rv-icon {
+  font-weight: 800;
+}
+
+.rv-ans {
+  margin-left: 12rpx;
+  font-weight: 500;
+  opacity: 0.8;
 }
 
 .hint {
   font-size: 24rpx;
-  color: #9A9A9A;
-  margin-top: 36rpx;
+  color: var(--sk-muted, #9A9A9A);
+  margin-top: 30rpx;
   line-height: 1.6;
+  animation: fadeUp 0.34s ease both;
+  animation-delay: 1.65s;
 }
 
+/* ===== 操作区 ===== */
 .actions {
-  margin-top: 48rpx;
+  margin-top: 44rpx;
 }
 
 .btn {
-  height: 92rpx;
-  line-height: 92rpx;
+  height: 96rpx;
+  line-height: 96rpx;
   text-align: center;
   border-radius: 999rpx;
   font-size: 32rpx;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 2rpx;
 }
 
 .btn.primary {
-  background: #58CC02;
-  color: #FFFFFF;
-  box-shadow: 0 10rpx 24rpx rgba(88, 204, 2, 0.24);
+  background: var(--sk-primary, #58CC02);
+  color: var(--sk-on-primary, #FFFFFF);
+  box-shadow: 0 8rpx 0 var(--sk-primary-dark, #46A302);
 }
 
 .btn-hover {
-  background: #4CB300;
+  background: var(--sk-primary-dark, #4CB300);
+  transform: translateY(4rpx);
+  box-shadow: 0 4rpx 0 var(--sk-primary-dark, #46A302);
 }
 
 .btn.ghost {
   margin-top: 24rpx;
-  background: #FFFFFF;
-  color: #58CC02;
-  border: 2rpx solid #DCEFC8;
+  background: var(--sk-card, #FFFFFF);
+  color: var(--sk-primary, #58CC02);
+  border: 3rpx solid var(--sk-border, #DCEFC8);
+  box-shadow: 0 8rpx 0 var(--sk-primary-soft, #EFF7E7);
 }
 
 .ghost-hover {
-  background: #F7FDF1;
+  background: var(--sk-primary-soft, #F7FDF1);
+  transform: translateY(4rpx);
+  box-shadow: 0 4rpx 0 var(--sk-primary-soft, #EFF7E7);
+}
+
+.back-home {
+  margin-top: 32rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--sk-muted, #9A9A9A);
+  text-decoration: underline;
+}
+
+/* ===== 经验与等级 ===== */
+.exp-card {
+  margin-top: 28rpx;
+  padding: 26rpx 28rpx;
+  border-radius: 28rpx;
+  background: var(--sk-card, #FFFFFF);
+  border: 2rpx solid var(--sk-line, #EEF1F4);
+  animation: fadeUp 0.32s ease both;
+  animation-delay: 1.42s;
+}
+
+.exp-card.up {
+  border-color: #FFD98A;
+  background: linear-gradient(180deg, #FFFDF5 0%, var(--sk-card, #FFFFFF) 60%);
+  box-shadow: 0 8rpx 24rpx rgba(255, 176, 32, 0.14);
+}
+
+.ec-head {
+  display: flex;
+  align-items: center;
+}
+
+/* 等级徽章：数字大、圆角方块，和星星形成不同层级的视觉 */
+.ec-badge {
+  min-width: 92rpx;
+  height: 64rpx;
+  padding: 0 14rpx;
+  border-radius: 18rpx;
+  background: linear-gradient(135deg, var(--sk-primary, #58CC02), var(--sk-primary-dark, #3FA300));
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 10rpx rgba(88, 204, 2, 0.24);
+}
+
+.exp-card.up .ec-badge {
+  background: linear-gradient(135deg, #FFC53D, #FF9600);
+  box-shadow: 0 4rpx 12rpx rgba(255, 150, 0, 0.28);
+}
+
+.ec-main {
+  flex: 1;
+  min-width: 0;
+  margin-left: 18rpx;
+}
+
+.ec-title {
+  display: flex;
+  align-items: baseline;
+}
+
+.ec-name {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: var(--sk-text, #2F2F2F);
+}
+
+.ec-gain {
+  margin-left: 12rpx;
+  font-size: 26rpx;
+  font-weight: 900;
+  color: var(--sk-primary, #58CC02);
+}
+
+.ec-gain.zero {
+  color: #B3B3B3;
+}
+
+.ec-sub {
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  color: var(--sk-muted, #9A9A9A);
+}
+
+.ec-bar {
+  margin-top: 18rpx;
+  height: 16rpx;
+  border-radius: 8rpx;
+  background: var(--sk-track, #EFEFEF);
+  overflow: hidden;
+}
+
+.ec-fill {
+  height: 100%;
+  border-radius: 8rpx;
+  background: linear-gradient(90deg, var(--sk-primary, #7BE02B), var(--sk-primary-dark, #58CC02));
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.exp-card.up .ec-fill {
+  background: linear-gradient(90deg, #FFD75E, #FF9600);
+}
+
+.ec-note {
+  margin-top: 12rpx;
+  font-size: 21rpx;
+  line-height: 1.5;
+  color: var(--sk-muted, #9A9A9A);
+}
+
+/* 升级横幅：金光一闪，作为整张卡的最高优先级信息 */
+.ec-levelup {
+  display: flex;
+  align-items: center;
+  margin-top: 16rpx;
+  padding: 12rpx 18rpx;
+  border-radius: 18rpx;
+  background: #FFF6E0;
+  animation: levelPop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 1.6s;
+}
+
+@keyframes levelPop {
+  0% { opacity: 0; transform: scale(0.88); }
+  60% { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* 跨段晋级：比普通升级更重，用金色描边 + 更强的光晕区分 */
+.ec-levelup.tierup {
+  background: linear-gradient(135deg, #FFF4D6, #FFE7B8);
+  border: 2rpx solid #FFD070;
+  box-shadow: 0 6rpx 18rpx rgba(255, 150, 0, 0.2);
+}
+
+.el-spark {
+  font-size: 24rpx;
+  margin-right: 8rpx;
+}
+
+.el-text {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #C97A00;
+}
+
+/* 解锁头像框 */
+.ec-frames {
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx dashed #EFEFEF;
+}
+
+.ef-title {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: var(--sk-muted, #8A8A8A);
+}
+
+.ef-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10rpx;
+}
+
+.ef-item {
+  display: flex;
+  align-items: center;
+  margin: 0 12rpx 8rpx 0;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: var(--sk-track, #F6F8FA);
+}
+
+.ef-emoji {
+  font-size: 22rpx;
+  margin-right: 6rpx;
+}
+
+.ef-name {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: var(--sk-sub, #4A4A4A);
+}
+
+.ef-hint {
+  margin-top: 4rpx;
+  font-size: 20rpx;
+  color: var(--sk-muted, #B0B0B0);
 }

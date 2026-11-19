@@ -1,0 +1,240 @@
+.page {
+  padding: 28rpx 32rpx 40rpx;
+}
+
+/* ===== 标题区 ===== */
+.head {
+  padding: 0 8rpx 8rpx;
+}
+
+.head-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.head-title {
+  font-size: 40rpx;
+  font-weight: 800;
+}
+
+.head-total {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #FF4B4B;
+  background: #FFF0F0;
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+}
+
+.head-sub {
+  font-size: 23rpx;
+  color: var(--sk-muted, #9A9A9A);
+  line-height: 1.6;
+  margin-top: 10rpx;
+}
+
+/* ===== 错题卡 ===== */
+.card {
+  background: var(--sk-card, #FFFFFF);
+  border-radius: 32rpx;
+  padding: 28rpx 26rpx;
+  margin-top: 24rpx;
+  box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.045);
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lv-tag {
+  font-size: 21rpx;
+  font-weight: 700;
+  color: var(--sk-primary, #58A000);
+  background: var(--sk-primary-soft, #F0FAE6);
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  max-width: 70%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.q-no {
+  font-size: 21rpx;
+  color: var(--sk-muted, #B8B8B8);
+  font-weight: 600;
+}
+
+.stem {
+  font-size: 32rpx;
+  font-weight: 800;
+  line-height: 1.6;
+  color: var(--sk-text, #2F2F2F);
+  margin-top: 18rpx;
+}
+
+.last-pick {
+  font-size: 23rpx;
+  color: var(--sk-muted, #9A9A9A);
+  margin-top: 12rpx;
+}
+
+.last-letter {
+  display: inline-block;
+  min-width: 40rpx;
+  text-align: center;
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  background: #FFF0F0;
+  color: #D93636;
+  font-weight: 800;
+  margin: 0 4rpx;
+}
+
+/* ===== 选项 ===== */
+.options {
+  margin-top: 20rpx;
+}
+
+.opt {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 20rpx;
+  margin-bottom: 14rpx;
+  border: 3rpx solid var(--sk-line, #EFEFEF);
+  border-radius: 20rpx;
+  background: var(--sk-card, #FCFCFC);
+}
+
+.opt-hover {
+  background: var(--sk-track, #F4F4F4);
+}
+
+.opt.correct {
+  border-color: var(--sk-primary, #58CC02);
+  background: var(--sk-primary-soft, #F1FBE7);
+}
+
+.opt.wrong {
+  border-color: #FF4B4B;
+  background: #FFF5F5;
+}
+
+.letter {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  border: 2rpx solid var(--sk-line, #E0E0E0);
+  color: var(--sk-muted, #9A9A9A);
+  background: var(--sk-card, #FFFFFF);
+  font-size: 24rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 18rpx;
+  flex-shrink: 0;
+}
+
+.opt.correct .letter {
+  border-color: var(--sk-primary, #58CC02);
+  background: var(--sk-primary, #58CC02);
+  color: #FFFFFF;
+}
+
+.opt.wrong .letter {
+  border-color: #FF4B4B;
+  background: #FF4B4B;
+  color: #FFFFFF;
+}
+
+.opt-text {
+  flex: 1;
+  font-size: 27rpx;
+  line-height: 1.5;
+  color: var(--sk-sub, #4A4A4A);
+  word-break: break-all;
+}
+
+.opt.correct .opt-text {
+  color: var(--sk-primary, #3E8E00);
+  font-weight: 700;
+}
+
+.opt.wrong .opt-text {
+  color: #D93636;
+}
+
+.mark {
+  width: 36rpx;
+  text-align: center;
+  font-size: 30rpx;
+  font-weight: 800;
+  margin-left: 10rpx;
+}
+
+.opt.correct .mark {
+  color: var(--sk-primary, #58CC02);
+}
+
+.opt.wrong .mark {
+  color: #FF4B4B;
+}
+
+/* ===== 作答结果 ===== */
+.result {
+  margin-top: 16rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 18rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.result.ok {
+  background: #F1FBE7;
+  color: #3E8E00;
+}
+
+.result.bad {
+  background: #FFF0F0;
+  color: #D93636;
+}
+
+/* ===== 底部操作 ===== */
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18rpx;
+  padding-top: 4rpx;
+}
+
+.exp-toggle {
+  font-size: 23rpx;
+  color: #1CB0F6;
+  font-weight: 700;
+}
+
+.go-level {
+  font-size: 23rpx;
+  color: var(--sk-muted, #B0B0B0);
+}
+
+.exp {
+  margin-top: 16rpx;
+  padding: 20rpx;
+  border-radius: 18rpx;
+  background: var(--sk-bg, #F7F7F9);
+  font-size: 24rpx;
+  line-height: 1.75;
+  color: var(--sk-sub, #6E6E6E);
+}
+
+/* ===== 底部导航预留 ===== */
+.tabbar-space {
+  height: calc(140rpx + env(safe-area-inset-bottom));
+}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "错题复习",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "tabbar": "/components/tabbar/tabbar"
+  }
+}

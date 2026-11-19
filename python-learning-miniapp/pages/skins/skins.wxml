@@ -1,0 +1,113 @@
+<view class="page sk-root {{skinClass}}" style="{{skinStyle}}">
+  <!-- ===== 顶部说明 ===== -->
+  <view class="intro">
+    <view class="intro-main">
+      <view class="intro-title">皮肤图鉴</view>
+      <view class="intro-sub">换一套配色，整站都跟着变</view>
+    </view>
+    <view class="intro-count">
+      <text class="ic-num">{{unlocked}}</text>
+      <text class="ic-dim">/{{total}}</text>
+    </view>
+  </view>
+
+  <!-- ===== 加载 ===== -->
+  <view wx:if="{{loading}}" class="sk-wrap">
+    <view class="sk sk-card"></view>
+    <view class="sk sk-card"></view>
+    <view class="sk-tip">正在加载皮肤…</view>
+  </view>
+
+  <!-- ===== 出错 ===== -->
+  <view wx:elif="{{error}}" class="state">
+    <view class="state-emoji">🔌</view>
+    <view class="state-text">{{error}}</view>
+    <view class="state-hint">请确认后端已启动（端口 8001）</view>
+    <view class="retry-btn" hover-class="retry-hover" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <!-- ===== 皮肤网格 ===== -->
+  <view wx:else class="grid">
+    <view
+      class="tile {{item.equipped ? 'on' : ''}} {{item.unlocked ? '' : 'locked'}}"
+      wx:for="{{skins}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onPick"
+      hover-class="tile-hover"
+    >
+      <!-- 缩略图：全部用这个皮肤自己的色板画，所以每张卡一眼就能看出差别 -->
+      <view class="phone" style="background: {{item.tokens.bg}}">
+        <view
+          class="ph-hero"
+          style="background: linear-gradient(135deg, {{item.tokens.hero_from}} 0%, {{item.tokens.hero_to}} 100%); border-color: {{item.tokens.hero_border}}"
+        >
+          <view class="ph-title" style="background: {{item.tokens.hero_text}}"></view>
+          <view class="ph-sub" style="background: {{item.tokens.hero_text}}"></view>
+          <view class="ph-hbar" style="background: {{item.tokens.hero_border}}">
+            <view class="ph-hfill" style="background: {{item.tokens.hero_text}}; width: 66%"></view>
+          </view>
+        </view>
+
+        <view class="ph-body">
+          <view class="ph-card" style="background: {{item.tokens.card}}; border-color: {{item.tokens.border}}">
+            <view class="ph-line" style="background: {{item.tokens.text}}"></view>
+            <view class="ph-line short" style="background: {{item.tokens.muted}}"></view>
+            <view class="ph-track" style="background: {{item.tokens.track}}">
+              <view class="ph-fill" style="background: {{item.tokens.primary}}; width: 62%"></view>
+            </view>
+          </view>
+          <view class="ph-btn" style="background: {{item.tokens.primary}}"></view>
+        </view>
+
+        <view class="ph-lock" wx:if="{{!item.unlocked}}">🔒</view>
+      </view>
+
+      <view class="tile-foot">
+        <view class="tile-name">
+          <text class="tile-emoji">{{item.emoji}}</text>{{item.name}}
+        </view>
+        <view class="tile-rarity" style="color: {{item.rarity_color}}; background: {{item.rarity_light}}">
+          {{item.rarity_name}}
+        </view>
+      </view>
+
+      <view class="tile-state {{item.equipped ? 'using' : ''}} {{item.unlocked ? '' : 'locked'}}">
+        <block wx:if="{{item.equipped}}">✓ 使用中</block>
+        <block wx:elif="{{item.unlocked}}">点击使用</block>
+        <block wx:else>{{item.unlock_hint}}</block>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!loading && !error}}" class="foot">
+    皮肤只影响界面配色，不影响关卡数据和成绩
+  </view>
+
+  <!-- ===== 未解锁说明弹层 ===== -->
+  <view class="mask" wx:if="{{showDetail}}" bindtap="closeDetail"></view>
+  <view class="sheet" wx:if="{{showDetail && detail}}" catchtap="noop">
+    <view class="sheet-top">
+      <view class="sheet-emoji">{{detail.emoji}}</view>
+      <view class="sheet-head">
+        <view class="sheet-name">{{detail.name}}</view>
+        <view class="sheet-rarity" style="color: {{detail.rarity_color}}; background: {{detail.rarity_light}}">
+          {{detail.rarity_name}}
+        </view>
+      </view>
+    </view>
+
+    <view class="sheet-desc">{{detail.desc}}</view>
+
+    <view class="sheet-tags">
+      <text class="stag" wx:for="{{detail.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+    </view>
+
+    <view class="sheet-lock">🔒 {{detail.unlock_hint}}</view>
+
+    <view class="sheet-actions">
+      <view class="sheet-btn ghost" bindtap="closeDetail">再看看</view>
+      <view class="sheet-btn main" bindtap="onGoUnlock">去解锁</view>
+    </view>
+  </view>
+</view>
