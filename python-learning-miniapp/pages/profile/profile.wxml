@@ -168,7 +168,7 @@
       </view>
       <view class="row">
         <view class="row-k">版本</view>
-        <view class="row-v">1.0.0</view>
+        <view class="row-v">1.1.1</view>
       </view>
       <view class="row row-tap" bindtap="onRelogin" hover-class="row-hover">
         <view class="row-k">登录态</view>
